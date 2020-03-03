@@ -38,29 +38,49 @@ class Game {
     var map = {}; //object for multiple key presses
     this._scene.actionManager = new BABYLON.ActionManager(this._scene);
 
-    this._scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
-        map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    this._scene.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnKeyDownTrigger,
+        function(evt) {
+          map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+        }
+      )
+    );
 
-    }));
-
-    this._scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
-        map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    }));
+    this._scene.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnKeyUpTrigger,
+        function(evt) {
+          map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+        }
+      )
+    );
     //////////////////////////////////////////
 
     GUI.create();
 
     // Camera
-    this._cam = new PerspCamera(new BABYLON.Vector3(0, 8, -30), this._scene, this._canvas);
+    this._cam = new PerspCamera(
+      new BABYLON.Vector3(0, 8, -30),
+      this._scene,
+      this._canvas
+    );
 
     // Skylight
-    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this._scene);
+    var light = new BABYLON.HemisphericLight(
+      "light",
+      new BABYLON.Vector3(0, 1, 0),
+      this._scene
+    );
     light.intensity = 0.7;
 
     this._player = new Player(this._scene, 0.03);
 
     var trail_ps = new BABYLON.ParticleSystem("particles", 1100, this._scene);
-    trail_ps.particleTexture = new BABYLON.Texture("assets/flare.png", this._scene);
+    trail_ps.particleTexture = new BABYLON.Texture(
+      "assets/flare.png",
+      this._scene
+    );
     trail_ps.emitter = this._player.playerCharacter;
     trail_ps.minEmitBox = new BABYLON.Vector3(-1, 0, 0);
     trail_ps.maxEmitBox = new BABYLON.Vector3(1, 0, 0);
@@ -89,17 +109,12 @@ class Game {
       this._player.update(this._delta);
       this._cam.camObj.position.x = this._player.playerCharacter.position.x;
       this._cam.camObj.position.z += 0.08 * this._delta;
-      
-      if(map['a'] || map['A']) 
-      {
+
+      if (map["a"] || map["A"]) {
         this._player.setCurrentDirection(-1);
-      }
-      else if(map['d'] || map['D']) 
-      {
+      } else if (map["d"] || map["D"]) {
         this._player.setCurrentDirection(1);
-      }
-      else 
-        this._player.setCurrentDirection(0);
+      } else this._player.setCurrentDirection(0);
     };
 
     // Updates
@@ -107,7 +122,7 @@ class Game {
       update();
     });
   }
-  
+
   /* -------------------------------- BABYLON RENDER LOOP ------------------------------- */
   playLoop(): void {
     let self = this;

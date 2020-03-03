@@ -28,6 +28,9 @@ module.exports = {
     node: {
         fs: 'empty'
     },
+    performance: {
+    	hints: false
+    },
     // mode: "development"
     mode: "production"
 };
