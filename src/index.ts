@@ -1,6 +1,9 @@
 // Classes
 import { Entity } from "./Entity";
-import { OrthoCamera } from "./Camera";
+import { PerspCamera } from "./Camera";
+import { GUI } from "./GUI";
+import { Player } from "./Player";
+import { World } from "./World";
 
 // The main game object
 class Game {
@@ -19,8 +22,8 @@ class Game {
   public _player_ready: boolean; // Check if player has been reset back after gameover (or first time playing)
   public _generated_spikes: boolean; // Check whether or not spikes have been generated
 
-  // Game objects
-  private _cam: OrthoCamera;
+  private _cam: PerspCamera;
+  private _player: Player;
 
   constructor(canvasElement: string) {
     /* ----------------------------- ENGINE SET-UP ----------------------------- */
@@ -31,23 +34,78 @@ class Game {
 
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void {
-    this._scene.gravity = new BABYLON.Vector3(0, -500, 0);
-    this._scene.collisionsEnabled = true;
-    this._scene.enablePhysics(
-      new BABYLON.Vector3(0, this._gravity, 0),
-      new BABYLON.AmmoJSPlugin()
-    );
-    // Initialise camera
-    this._cam = new OrthoCamera(
-      new BABYLON.Vector2(0, 0),
-      this._scene,
-      this._canvas
-    );
+    // TEMP // MOVE THIS INTO A INPUT CLASS
+    var map = {}; //object for multiple key presses
+    this._scene.actionManager = new BABYLON.ActionManager(this._scene);
+
+    this._scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+        map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+
+    }));
+
+    this._scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
+        map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    }));
+    //////////////////////////////////////////
+
+    this._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+    this._scene.fogDensity = 0.03;
+    this._scene.fogStart = 5.0; // START
+    this._scene.fogEnd = 150.0; // END
+    this._scene.fogColor = new BABYLON.Color3(1, 0.9, 0.8);
+
+    GUI.create();
+
+    // Camera
+    this._cam = new PerspCamera(new BABYLON.Vector3(0, 8, -30), this._scene, this._canvas);
+
+    // Skylight
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this._scene);
+    light.intensity = 0.7;
+
+    this._player = new Player(this._scene, 0.03);
+
+    var trail_ps = new BABYLON.ParticleSystem("particles", 1100, this._scene);
+    trail_ps.particleTexture = new BABYLON.Texture("textures/flare.png", this._scene);
+    trail_ps.emitter = this._player.playerCharacter;
+    trail_ps.minEmitBox = new BABYLON.Vector3(-1, 0, 0);
+    trail_ps.maxEmitBox = new BABYLON.Vector3(1, 0, 0);
+    trail_ps.minSize = 0.5;
+    trail_ps.maxSize = 0.8;
+    trail_ps.minLifeTime = 0.3;
+    trail_ps.maxLifeTime = 1.5;
+    trail_ps.emitRate = 1500;
+    trail_ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+    trail_ps.direction1 = new BABYLON.Vector3(0, 0, -3);
+    trail_ps.direction2 = new BABYLON.Vector3(0, 0, -3);
+    trail_ps.minAngularSpeed = 0;
+    trail_ps.maxAngularSpeed = Math.PI;
+    trail_ps.minEmitPower = 1;
+    trail_ps.maxEmitPower = 3;
+    trail_ps.updateSpeed = 0.15;
+    trail_ps.start();
+
+    World.generate(this._scene);
 
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
       // Calc delta here
       this._delta = this._engine.getDeltaTime();
+
+      this._player.update(this._delta);
+      this._cam.camObj.position.x = this._player.playerCharacter.position.x;
+      this._cam.camObj.position.z += 0.08 * this._delta;
+      
+      if(map['a'] || map['A']) 
+      {
+        this._player.setCurrentDirection(-1);
+      }
+      else if(map['d'] || map['D']) 
+      {
+        this._player.setCurrentDirection(1);
+      }
+      else 
+        this._player.setCurrentDirection(0);
     };
 
     // Updates
@@ -55,15 +113,14 @@ class Game {
       update();
     });
   }
-
+  
   /* -------------------------------- BABYLON RENDER LOOP ------------------------------- */
   playLoop(): void {
     let self = this;
 
     // run the render loop
     this._engine.runRenderLoop(() => {
-      //this.update();
-      this._scene.clearColor = new BABYLON.Color4(1, 0.94, 0.96, 1);
+      this._scene.clearColor = new BABYLON.Color4(1, 0.9, 0.8, 1);
       self._scene.render();
     });
 

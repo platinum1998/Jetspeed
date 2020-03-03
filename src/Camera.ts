@@ -1,31 +1,23 @@
 import { Entity } from "./Entity";
 
 // Ortho camera
-export class OrthoCamera extends Entity {
-  camObj: BABYLON.Camera;
+export class PerspCamera {
+  public camObj: BABYLON.FreeCamera;
 
   constructor(
-    pos: BABYLON.Vector2,
+    pos: BABYLON.Vector3,
     scene: BABYLON.Scene,
     canvas: HTMLCanvasElement
   ) {
-    super(pos);
     this.camObj = new BABYLON.FreeCamera(
-      "camera1",
-      new BABYLON.Vector3(0, 0, -10),
+      "cam1", 
+      pos,
       scene
     );
-  
-    this.camObj.inputs.clear();
-    this.camObj.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-    let ratio = window.innerWidth / window.innerHeight;
-    let zoom = this.camObj.orthoTop;
-    let newWidth = zoom * ratio;
-    this.camObj.orthoTop = newWidth;
-    this.camObj.orthoLeft = -Math.abs(zoom);
-    this.camObj.orthoRight = newWidth;
-    this.camObj.orthoBottom = -Math.abs(zoom);
+
+    this.camObj.setTarget(new BABYLON.Vector3(0, 6, 0));
     this.camObj.attachControl(canvas, true);
+    this.camObj.inputs.clear();
   }
 
   update(dT: number): void {}

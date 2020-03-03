@@ -4,13 +4,12 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0;
-  background-color: rgb(20, 20, 20);
+  background-color: rgb(70, 70, 70);
 }
 
 #renderCanvas {
-  width: 700px;
-  height: 600px;
+  width: 540px;
+  height: 960px;
   outline: none;
   position: absolute;
   display: block;
