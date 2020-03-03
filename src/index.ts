@@ -48,12 +48,6 @@ class Game {
     }));
     //////////////////////////////////////////
 
-    this._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-    this._scene.fogDensity = 0.03;
-    this._scene.fogStart = 5.0; // START
-    this._scene.fogEnd = 150.0; // END
-    this._scene.fogColor = new BABYLON.Color3(1, 0.9, 0.8);
-
     GUI.create();
 
     // Camera
@@ -66,14 +60,14 @@ class Game {
     this._player = new Player(this._scene, 0.03);
 
     var trail_ps = new BABYLON.ParticleSystem("particles", 1100, this._scene);
-    trail_ps.particleTexture = new BABYLON.Texture("textures/flare.png", this._scene);
+    trail_ps.particleTexture = new BABYLON.Texture("assets/flare.png", this._scene);
     trail_ps.emitter = this._player.playerCharacter;
     trail_ps.minEmitBox = new BABYLON.Vector3(-1, 0, 0);
     trail_ps.maxEmitBox = new BABYLON.Vector3(1, 0, 0);
     trail_ps.minSize = 0.5;
-    trail_ps.maxSize = 0.8;
+    trail_ps.maxSize = 0.7;
     trail_ps.minLifeTime = 0.3;
-    trail_ps.maxLifeTime = 1.5;
+    trail_ps.maxLifeTime = 0.4;
     trail_ps.emitRate = 1500;
     trail_ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
     trail_ps.direction1 = new BABYLON.Vector3(0, 0, -3);
@@ -82,7 +76,7 @@ class Game {
     trail_ps.maxAngularSpeed = Math.PI;
     trail_ps.minEmitPower = 1;
     trail_ps.maxEmitPower = 3;
-    trail_ps.updateSpeed = 0.15;
+    trail_ps.updateSpeed = 0.03;
     trail_ps.start();
 
     World.generate(this._scene);
