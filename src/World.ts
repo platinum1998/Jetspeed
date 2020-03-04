@@ -55,6 +55,6 @@ export class World {
 
   static update(delta: number) {
     //this.player.update(delta);
-    this.camera.camObj.position.z += 0.5; //* delta;
+    this.camera.camObj.position.z += 0.8; //* delta;
   };
 }

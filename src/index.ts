@@ -85,9 +85,7 @@ class Game {
         mesh.scaling.z = 100;
 
         this._scene.registerBeforeRender(function() {
-          mesh.position.z += 0.5;
-
-          World.camera.camObj.position.x = mesh.position.x;
+          mesh.position.z += 0.8;
 
           if (map["a"] || map["A"]) {
             mesh.position.x -= 0.3;
@@ -111,6 +109,8 @@ class Game {
               0.1
             );
           }
+
+          World.camera.camObj.position.x = mesh.position.x;
         });
       };
     };
