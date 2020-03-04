@@ -78,7 +78,7 @@ class Game {
         mesh = task.loadedMeshes[0];
         mesh.position.x = 0;
         mesh.position.y = -1;
-        mesh.position.z = 10;
+        mesh.position.z = -14;
 
         mesh.scaling.x = 100;
         mesh.scaling.y = 100;
@@ -88,24 +88,41 @@ class Game {
           mesh.position.z += 0.8;
 
           if (map["a"] || map["A"]) {
-            mesh.position.x -= 0.3;
+            mesh.position.x -= 0.8;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
-              new BABYLON.Vector3(0, 0, 0.5),
+              new BABYLON.Vector3(0, 0, 0.8),
               0.1
             );
-          }
-          if (map["d"] || map["D"]) {
-            mesh.position.x += 0.3;
+
+            World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
+              World.camera.camObj.rotation.z,
+              BABYLON.Tools.ToRadians(4),
+              0.1
+            );
+          } else if (map["d"] || map["D"]) {
+            mesh.position.x += 0.8;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
-              new BABYLON.Vector3(0, 0, -0.5),
+              new BABYLON.Vector3(0, 0, -0.8),
+              0.1
+            );
+
+            World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
+              World.camera.camObj.rotation.z,
+              BABYLON.Tools.ToRadians(-4),
               0.1
             );
           } else {
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, 0),
+              0.1
+            );
+
+            World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
+              World.camera.camObj.rotation.z,
+              BABYLON.Tools.ToRadians(0),
               0.1
             );
           }
