@@ -78,7 +78,7 @@ class Game {
         mesh = task.loadedMeshes[0];
         mesh.position.x = 0;
         mesh.position.y = -1;
-        mesh.position.z = 10;
+        mesh.position.z = -14;
 
         mesh.scaling.x = 100;
         mesh.scaling.y = 100;
@@ -88,25 +88,25 @@ class Game {
           mesh.position.z += 0.8;
 
           if (map["a"] || map["A"]) {
-            mesh.position.x -= 0.3;
+            mesh.position.x -= 0.5;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, 0.5),
-              0.1
+              0.15
             );
           }
           if (map["d"] || map["D"]) {
-            mesh.position.x += 0.3;
+            mesh.position.x += 0.5;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, -0.5),
-              0.1
+              0.15
             );
           } else {
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, 0),
-              0.1
+              0.15
             );
           }
 
