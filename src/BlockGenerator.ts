@@ -31,7 +31,7 @@ export class BlockGenerator {
         meshTask.onSuccess = (task) => {
             const pianoMesh = task.loadedMeshes[0];
             // Do something with the mesh here
-            pianoMesh.position.x = 0;
+            pianoMesh.position.x = -20;
             pianoMesh.position.y = 0;
             pianoMesh.position.z = 100;
             
@@ -39,6 +39,13 @@ export class BlockGenerator {
             pianoMesh.scaling.x = 500;
             pianoMesh.scaling.y = 500;
             pianoMesh.scaling.z = 500;
+            
+            
+            let instances; 
+            for (let i = 0; i < 10; i++) {
+                instances.push(pianoMesh.instantiateHierarchy());
+                instances[i].position.x = instances[i].position.x + 5;
+            }
 
 
             scene.registerBeforeRender(function() {

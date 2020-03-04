@@ -7,7 +7,7 @@ import { BlockGenerator} from "./BlockGenerator";
 // World functionality
 export class World {
   public static camera: PerspCamera;
-  public static player: Player;
+ // public static player: Player;
   public static blocks: Array<Block>;
 
   static initialise(scene: BABYLON.Scene, canvas: HTMLCanvasElement): void {
@@ -33,28 +33,28 @@ export class World {
     scene.fogColor = new BABYLON.Color3(1, 0.9, 0.8);
 
     // Player object
-    this.player = new Player(scene, 0.03);
+    //this.player = new Player(scene, 0.03);
 
     // Blocks
     BlockGenerator.Initialise(scene, assetsManager, World.blocks);
 
     // Audio
-    var music = new BABYLON.Sound(
-      "Soundtrack",
-      "assets/audio/SoundTrack.wav",
-      scene,
-      null,
-      {
-        loop: true,
-        autoplay: true
-      }
-    );
+    // var music = new BABYLON.Sound(
+    //   "Soundtrack",
+    //   "assets/audio/SoundTrack.wav",
+    //   scene,
+    //   null,
+    //   {
+    //     loop: true,
+    //     autoplay: true
+    //   }
+    // );
 
     assetsManager.load();
   }
 
   static update(delta: number) {
-    this.player.update(delta);
-    this.camera.camObj.position.z += 0.1; //* delta;
+    //this.player.update(delta);
+    this.camera.camObj.position.z += 0.5; //* delta;
   };
 }

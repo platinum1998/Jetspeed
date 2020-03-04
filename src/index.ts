@@ -57,6 +57,15 @@ class Game {
 
     World.initialise(this._scene, this._canvas);
 
+    const assetsManager = new BABYLON.AssetsManager(this._scene);
+    const meshTask = assetsManager.addMeshTask(
+      "block_instance",
+      "",
+      "assets/geometry/",
+      "jet_rxtz.babylon"
+    );
+    assetsManager.load();
+
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
       // Calc delta here
@@ -64,15 +73,48 @@ class Game {
 
       World.update(this._delta);
 
-      // Input
-      if (map["a"] || map["A"]) {
-        console.log("LEFT");
-        World.player.setCurrentDirection(-1);
-      } else if (map["d"] || map["D"]) {
-        World.player.setCurrentDirection(1);
-      } else World.player.setCurrentDirection(0);
+      var mesh;
+      meshTask.onSuccess = task => {
+        mesh = task.loadedMeshes[0];
+        mesh.position.x = 0;
+        mesh.position.y = -1;
+        mesh.position.z = 10;
+
+        mesh.scaling.x = 100;
+        mesh.scaling.y = 100;
+        mesh.scaling.z = 100;
+
+        this._scene.registerBeforeRender(function() {
+          mesh.position.z += 0.5;
+
+          World.camera.camObj.position.x = mesh.position.x;
+
+          if (map["a"] || map["A"]) {
+            mesh.position.x -= 0.3;
+            mesh.rotation = BABYLON.Vector3.Lerp(
+              mesh.rotation,
+              new BABYLON.Vector3(0, 0, 0.5),
+              0.1
+            );
+          }
+          if (map["d"] || map["D"]) {
+            mesh.position.x += 0.3;
+            mesh.rotation = BABYLON.Vector3.Lerp(
+              mesh.rotation,
+              new BABYLON.Vector3(0, 0, -0.5),
+              0.1
+            );
+          } else {
+            mesh.rotation = BABYLON.Vector3.Lerp(
+              mesh.rotation,
+              new BABYLON.Vector3(0, 0, 0),
+              0.1
+            );
+          }
+        });
+      };
     };
-    
+
     // Updates
     this._scene.registerBeforeRender(function() {
       update();
