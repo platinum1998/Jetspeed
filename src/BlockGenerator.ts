@@ -42,32 +42,38 @@ export class BlockGenerator {
     );
     meshTask.onSuccess = task => {
       const pianoMesh = task.loadedMeshes[0];
-      // Do something with the mesh here
-      pianoMesh.position.x = -20;
-      pianoMesh.position.y = 0;
-      pianoMesh.position.z = 100;
 
       pianoMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
-      pianoMesh.scaling.x = 500;
-      pianoMesh.scaling.y = 500;
-      pianoMesh.scaling.z = 500;
+      pianoMesh.scaling = new BABYLON.Vector3(1000, 1000, 1000);
 
-      let instances = pianoMesh.instantiateHierarchy();
-      instances.position.x = instances.position.x + 10;
+      // Do something with the mesh here
+      pianoMesh.position.x = -20;
+      pianoMesh.position.y = -20;
+      pianoMesh.position.z = 100;
+
+      let instances;
+
+      //   instances = pianoMesh.instantiateHierarchy();
+      //   instances.position.x = 10;
+
+      let i_array = [];
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 50; j++) {
+          i_array[i] = pianoMesh.instantiateHierarchy();
+          i_array[i].position.x = i * 10;
+          i_array[i].position.z = j * 10;
+          if (!this.probability(0.99)) i_array[i].scaling.y = 8000;
+          else i_array[i].scaling.y = BABYLON.Scalar.RandomRange(10, 1000);
+        }
+      }
+
+      let last_z_index = i_array[i_array.length - 1]; // Get last z block index for position update
 
       scene.registerBeforeRender(function() {
-        pianoMesh.scaling.y += 10;
+        // Level regeneration in realtime here...
       });
     };
-
-    //for (let i = 0; i < 3; i++)
-    // BlockGenerator.finished_gen[i] = false;
-
-    // for (let z = 0; z < MAX_COLUMNS; z++) {
-    //     for (let x = 0; x < MAX_ROWS; x++) {
-    //         block_list.push(new Block(new BABYLON.Vector2(x, z), Math.random() * MIN_BLOCK_HEIGHT * MAX_BLOCK_HEIGHT, false, ));
-    //     }
-    // }
   }
 
   // Generate rows and columns of level in realtime

@@ -66,6 +66,32 @@ class Game {
     );
     assetsManager.load();
 
+    // TEMP /////////////////////////////////////////////////////////////////////////////
+    var hoop_mat = new BABYLON.StandardMaterial("hoop_material", this._scene);
+    hoop_mat.diffuseColor = new BABYLON.Color3(1.0, 0, 1);
+    hoop_mat.emissiveColor = new BABYLON.Color3(1.0, 0, 1);
+
+    var hoop = BABYLON.MeshBuilder.CreateTorus(
+      "hoop",
+      { thickness: 0.05 },
+      this._scene
+    );
+    hoop.position.z = 100;
+    hoop.scaling = new BABYLON.Vector3(10, 10, 10);
+    hoop.rotation = new BABYLON.Vector3(1.5, 0, 0);
+    hoop.material = hoop_mat;
+
+    for (let i = 0; i < 3; i++) {
+      let instance = hoop.createInstance("hoop" + i);
+      instance.position.x = BABYLON.Scalar.RandomRange(-50, 50) + i;
+      instance.position.y = 1;
+      instance.position.z = BABYLON.Scalar.RandomRange(-50, 500) + i;
+    }
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    // TEMP
+    var iteration_delay = 0;
+
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
       // Calc delta here
@@ -73,9 +99,23 @@ class Game {
 
       World.update(this._delta);
 
+      // UI Score
+      iteration_delay++;
+      if (iteration_delay >= 0.5 * this._delta) {
+        GUI.distance++;
+        iteration_delay = 0;
+      }
+      GUI.distance_travelled.text = "" + GUI.distance;
+
       var mesh;
       meshTask.onSuccess = task => {
+        let material = new BABYLON.StandardMaterial("block_mat", this._scene);
+        material.diffuseColor = new BABYLON.Color3(1.0, 0.98, 0.95);
+        material.specularColor = new BABYLON.Color3(0, 0, 0);
+
         mesh = task.loadedMeshes[0];
+        mesh.material = material;
+
         mesh.position.x = 0;
         mesh.position.y = -1;
         mesh.position.z = -14;
@@ -85,14 +125,14 @@ class Game {
         mesh.scaling.z = 100;
 
         this._scene.registerBeforeRender(function() {
-          mesh.position.z += 0.8;
+          mesh.position.z += 2.5;
 
           if (map["a"] || map["A"]) {
-            mesh.position.x -= 0.8;
+            mesh.position.x -= 1.6;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, 0.8),
-              0.1
+              0.3
             );
 
             World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
@@ -101,11 +141,11 @@ class Game {
               0.1
             );
           } else if (map["d"] || map["D"]) {
-            mesh.position.x += 0.8;
+            mesh.position.x += 1.6;
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, -0.8),
-              0.1
+              0.3
             );
 
             World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
@@ -117,7 +157,7 @@ class Game {
             mesh.rotation = BABYLON.Vector3.Lerp(
               mesh.rotation,
               new BABYLON.Vector3(0, 0, 0),
-              0.1
+              0.2
             );
 
             World.camera.camObj.rotation.z = BABYLON.Scalar.Lerp(
