@@ -1,8 +1,6 @@
 // Classes
 import { Entity } from "./Entity";
-import { PerspCamera } from "./Camera";
 import { GUI } from "./GUI";
-import { Player } from "./Player";
 import { World } from "./World";
 
 // The main game object
@@ -22,9 +20,6 @@ class Game {
   public _player_ready: boolean; // Check if player has been reset back after gameover (or first time playing)
   public _generated_spikes: boolean; // Check whether or not spikes have been generated
 
-  private _cam: PerspCamera;
-  private _player: Player;
-
   constructor(canvasElement: string) {
     /* ----------------------------- ENGINE SET-UP ----------------------------- */
     this._canvas = document.getElementById(canvasElement) as HTMLCanvasElement;
@@ -35,7 +30,8 @@ class Game {
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void {
     // TEMP // MOVE THIS INTO A INPUT CLASS
-    var map = {}; //object for multiple key presses
+    var map = {};
+
     this._scene.actionManager = new BABYLON.ActionManager(this._scene);
 
     this._scene.actionManager.registerAction(
@@ -59,64 +55,24 @@ class Game {
 
     GUI.create();
 
-    // Camera
-    this._cam = new PerspCamera(
-      new BABYLON.Vector3(0, 8, -30),
-      this._scene,
-      this._canvas
-    );
-
-    // Skylight
-    var light = new BABYLON.HemisphericLight(
-      "light",
-      new BABYLON.Vector3(0, 1, 0),
-      this._scene
-    );
-    light.intensity = 0.7;
-
-    this._player = new Player(this._scene, 0.03);
-
-    var trail_ps = new BABYLON.ParticleSystem("particles", 1100, this._scene);
-    trail_ps.particleTexture = new BABYLON.Texture(
-      "assets/flare.png",
-      this._scene
-    );
-    trail_ps.emitter = this._player.playerCharacter;
-    trail_ps.minEmitBox = new BABYLON.Vector3(-1, 0, 0);
-    trail_ps.maxEmitBox = new BABYLON.Vector3(1, 0, 0);
-    trail_ps.minSize = 0.5;
-    trail_ps.maxSize = 0.7;
-    trail_ps.minLifeTime = 0.3;
-    trail_ps.maxLifeTime = 0.4;
-    trail_ps.emitRate = 1500;
-    trail_ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-    trail_ps.direction1 = new BABYLON.Vector3(0, 0, -3);
-    trail_ps.direction2 = new BABYLON.Vector3(0, 0, -3);
-    trail_ps.minAngularSpeed = 0;
-    trail_ps.maxAngularSpeed = Math.PI;
-    trail_ps.minEmitPower = 1;
-    trail_ps.maxEmitPower = 3;
-    trail_ps.updateSpeed = 0.03;
-    trail_ps.start();
-
-    World.generate(this._scene);
+    World.initialise(this._scene, this._canvas);
 
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
       // Calc delta here
       this._delta = this._engine.getDeltaTime();
 
-      this._player.update(this._delta);
-      this._cam.camObj.position.x = this._player.playerCharacter.position.x;
-      this._cam.camObj.position.z += 0.08 * this._delta;
+      World.update(this._delta);
 
+      // Input
       if (map["a"] || map["A"]) {
-        this._player.setCurrentDirection(-1);
+        console.log("LEFT");
+        World.player.setCurrentDirection(-1);
       } else if (map["d"] || map["D"]) {
-        this._player.setCurrentDirection(1);
-      } else this._player.setCurrentDirection(0);
+        World.player.setCurrentDirection(1);
+      } else World.player.setCurrentDirection(0);
     };
-
+    
     // Updates
     this._scene.registerBeforeRender(function() {
       update();
