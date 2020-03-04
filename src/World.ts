@@ -16,7 +16,7 @@ export class World {
 
     // Camera object
     this.camera = new PerspCamera(
-      new BABYLON.Vector3(0, 8, -30),
+      new BABYLON.Vector3(0, 8, -31),
       scene,
       canvas
     );
@@ -24,7 +24,7 @@ export class World {
     // Skylight
     var light = new BABYLON.HemisphericLight(
       "light",
-      new BABYLON.Vector3(0.5, 0.8, 0.75),
+      new BABYLON.Vector3(0.25, 0.75, -0.25),
       scene
     );
     light.intensity = 1;
@@ -53,8 +53,8 @@ export class World {
     scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     scene.fogDensity = 0.03;
     scene.fogStart = 5.0;
-    scene.fogEnd = 30.0;
-    scene.fogColor = new BABYLON.Color3(1, 0.6, 0.4);
+    scene.fogEnd = 900.0;
+    scene.fogColor = new BABYLON.Color3(1, 0.9, 0.8);
   }
 
   static update(delta: number) {

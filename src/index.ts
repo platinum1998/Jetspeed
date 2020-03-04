@@ -77,7 +77,8 @@ class Game {
       this._scene
     );
     hoop.position.z = 100;
-    hoop.scaling = new BABYLON.Vector3(10, 10, 10);
+    hoop.position.y = -2;
+    hoop.scaling = new BABYLON.Vector3(20, 20, 20);
     hoop.rotation = new BABYLON.Vector3(1.5, 0, 0);
     hoop.material = hoop_mat;
 

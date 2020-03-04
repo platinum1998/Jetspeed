@@ -43,28 +43,27 @@ export class BlockGenerator {
     meshTask.onSuccess = task => {
       const pianoMesh = task.loadedMeshes[0];
 
+      pianoMesh.applyFog = true;
       pianoMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
-      pianoMesh.scaling = new BABYLON.Vector3(1000, 1000, 1000);
+      pianoMesh.scaling = new BABYLON.Vector3(3000, 3000, 3000);
 
       // Do something with the mesh here
       pianoMesh.position.x = -20;
-      pianoMesh.position.y = -20;
+      pianoMesh.position.y = -50;
       pianoMesh.position.z = 100;
-
-      let instances;
 
       //   instances = pianoMesh.instantiateHierarchy();
       //   instances.position.x = 10;
 
       let i_array = [];
 
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 50; j++) {
+      for (let i = 0; i < MAX_ROWS; i++) {
+        for (let j = 0; j < MAX_COLUMNS; j++) {
           i_array[i] = pianoMesh.instantiateHierarchy();
-          i_array[i].position.x = i * 10;
-          i_array[i].position.z = j * 10;
-          if (!this.probability(0.99)) i_array[i].scaling.y = 8000;
-          else i_array[i].scaling.y = BABYLON.Scalar.RandomRange(10, 1000);
+          i_array[i].position.x = i * 30 - (MAX_ROWS / 2) * 30;
+          i_array[i].position.z = j * 30;
+          if (!this.probability(0.97)) i_array[i].scaling.y = 80000;
+          else i_array[i].scaling.y = BABYLON.Scalar.RandomRange(10, 2000);
         }
       }
 
@@ -72,6 +71,7 @@ export class BlockGenerator {
 
       scene.registerBeforeRender(function() {
         // Level regeneration in realtime here...
+        //if (last_z_index.position.z)
       });
     };
   }
