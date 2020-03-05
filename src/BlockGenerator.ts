@@ -41,16 +41,16 @@ export class BlockGenerator {
       "block.babylon"
     );
     meshTask.onSuccess = task => {
-      const pianoMesh = task.loadedMeshes[0];
+      const shipMesh = task.loadedMeshes[0];
 
-      pianoMesh.applyFog = true;
-      pianoMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
-      pianoMesh.scaling = new BABYLON.Vector3(3000, 3000, 3000);
+      shipMesh.applyFog = true;
+      shipMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
+      shipMesh.scaling = new BABYLON.Vector3(3000, 3000, 3000);
 
       // Do something with the mesh here
-      pianoMesh.position.x = -20;
-      pianoMesh.position.y = -50;
-      pianoMesh.position.z = 100;
+      shipMesh.position.x = -20;
+      shipMesh.position.y = -50;
+      shipMesh.position.z = 100;
 
       //   instances = pianoMesh.instantiateHierarchy();
       //   instances.position.x = 10;
@@ -59,7 +59,7 @@ export class BlockGenerator {
 
       for (let i = 0; i < MAX_ROWS; i++) {
         for (let j = 0; j < MAX_COLUMNS; j++) {
-          i_array[i] = pianoMesh.instantiateHierarchy();
+          i_array[i] = shipMesh.instantiateHierarchy();
           i_array[i].position.x = i * 30 - (MAX_ROWS / 2) * 30;
           i_array[i].position.z = j * 30;
           if (!this.probability(0.97)) i_array[i].scaling.y = 80000;

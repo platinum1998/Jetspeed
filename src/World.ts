@@ -3,11 +3,14 @@ import { PerspCamera } from "./Camera";
 import { Player } from "./Player";
 import { Block } from "./Block";
 import { BlockGenerator } from "./BlockGenerator";
+import { Entity } from "./Entity";
+import { BonusGenerator } from "./BonusGenerator";
+import { Scene } from "babylonjs";
 
 // World functionality
 export class World {
-  public static camera: PerspCamera;
   // public static player: Player;
+  public static camera: PerspCamera;
   public static blocks: Array<Block>;
 
   static initialise(scene: BABYLON.Scene, canvas: HTMLCanvasElement): void {
@@ -34,6 +37,9 @@ export class World {
 
     // Blocks
     BlockGenerator.Initialise(scene, assetsManager, World.blocks);
+    
+    // Bonuses
+    BonusGenerator.Initialise(2, -50, 500, scene);
 
     // Audio
     // var music = new BABYLON.Sound(
