@@ -12,7 +12,7 @@ export class Content {
 
     // Meshes
     Content.MeshList = assetsManager.addMeshTask(
-      "block_instance",
+      "ship_instance",
       "",
       "assets/geometry/",
       "jet_rxtz.babylon"

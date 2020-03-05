@@ -35,22 +35,22 @@ export class BlockGenerator {
     block_list: Block[]
   ): void {
     const meshTask = assetsManager.addMeshTask(
-      "piano task",
+      "block task",
       "",
       "assets/geometry/",
       "block.babylon"
     );
     meshTask.onSuccess = task => {
-      const shipMesh = task.loadedMeshes[0];
+      const blockMesh = task.loadedMeshes[0];
 
-      shipMesh.applyFog = true;
-      shipMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
-      shipMesh.scaling = new BABYLON.Vector3(3000, 3000, 3000);
+      blockMesh.applyFog = true;
+      blockMesh.setPivotPoint(new BABYLON.Vector3(0, -0.005, 0));
+      blockMesh.scaling = new BABYLON.Vector3(3000, 3000, 3000);
 
       // Do something with the mesh here
-      shipMesh.position.x = -20;
-      shipMesh.position.y = -50;
-      shipMesh.position.z = 100;
+      blockMesh.position.x = -20;
+      blockMesh.position.y = -50;
+      blockMesh.position.z = 100;
 
       //   instances = pianoMesh.instantiateHierarchy();
       //   instances.position.x = 10;
@@ -59,7 +59,7 @@ export class BlockGenerator {
 
       for (let i = 0; i < MAX_ROWS; i++) {
         for (let j = 0; j < MAX_COLUMNS; j++) {
-          i_array[i] = shipMesh.instantiateHierarchy();
+          i_array[i] = blockMesh.instantiateHierarchy();
           i_array[i].position.x = i * 30 - (MAX_ROWS / 2) * 30;
           i_array[i].position.z = j * 30;
           if (!this.probability(0.97)) i_array[i].scaling.y = 80000;
