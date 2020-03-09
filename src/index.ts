@@ -1,10 +1,5 @@
-// Classes
-import { GUI } from "./GUI";
-import { World } from "./World";
-import { Globals } from "./Globals";
-import { Player } from "./Player";
-import { Input } from "./Input";
-import { StateManager } from "./StateManager";
+import { createApplication, loadAllContent } from "./helper"
+import { Globals } from "./globals";
 
 // The main game object
 class Game {
@@ -12,44 +7,27 @@ class Game {
   public _canvas: HTMLCanvasElement;
   public _engine: BABYLON.Engine;
 
+  public _scene: BABYLON.Scene;
+
   // Stats
   public _delta: number;
-  public _gravity: number;
   public _score: number;
-  public _interp_t: number; // dist during interp
-  public _interp_speed: number; // Interp speed
-  public _gameover: boolean; // Check if player hit spike
-  public _player_ready: boolean; // Check if player has been reset back after gameover (or first time playing)
-  public _generated_spikes: boolean; // Check whether or not spikes have been generated
 
-  private _state_manager: StateManager;
-
+  /**
+   * initialise the babylon engine and create a new empty scene
+   * @param canvasElement the canvas that the content will be rendered to
+   */
   constructor(canvasElement: string) {
     /* ----------------------------- ENGINE SET-UP ----------------------------- */
-    this._canvas = document.getElementById(canvasElement) as HTMLCanvasElement;
-    this._engine = new BABYLON.Engine(this._canvas, true);
-    Globals._scene = new BABYLON.Scene(this._engine);
+    createApplication(canvasElement);
   }
 
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void 
   {
-    Globals.idle = true;
-
-    // Update the keyboard input
-    Input.UpdateInput();
-
-    this._state_manager = new StateManager();
-
-    // Initialise the world
-    World.initialise(Globals._scene, this._canvas);
-
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
-      this._delta = this._engine.getDeltaTime();
-
-      this._state_manager.update(this._delta);
-      World.update(this._delta);
+      this._delta = Globals._engine.getDeltaTime();
     };
 
     // Updates
@@ -63,7 +41,7 @@ class Game {
     let self = this;
 
     // run the render loop
-    this._engine.runRenderLoop(() => {
+    Globals._engine.runRenderLoop(() => {
       Globals._scene.clearColor = new BABYLON.Color4(1, 0.9, 0.8, 1);
       Globals._scene.render();
     });
