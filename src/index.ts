@@ -1,12 +1,10 @@
 // Classes
-import { Entity } from "./Entity";
 import { GUI } from "./GUI";
 import { World } from "./World";
 import { Globals } from "./Globals";
 import { Player } from "./Player";
-import { BonusGenerator } from "./BonusGenerator";
-import { Content } from "./Content";
 import { Input } from "./Input";
+import { StateManager } from "./StateManager";
 
 // The main game object
 class Game {
@@ -24,7 +22,7 @@ class Game {
   public _player_ready: boolean; // Check if player has been reset back after gameover (or first time playing)
   public _generated_spikes: boolean; // Check whether or not spikes have been generated
 
-  private _player: Player;
+  private _state_manager: StateManager;
 
   constructor(canvasElement: string) {
     /* ----------------------------- ENGINE SET-UP ----------------------------- */
@@ -36,11 +34,12 @@ class Game {
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void 
   {
+    Globals.idle = true;
+
     // Update the keyboard input
     Input.UpdateInput();
 
-    // create the User Interface
-    GUI.create();
+    this._state_manager = new StateManager();
 
     // Initialise the world
     World.initialise(Globals._scene, this._canvas);
@@ -49,6 +48,7 @@ class Game {
     var update = () => {
       this._delta = this._engine.getDeltaTime();
 
+      this._state_manager.update(this._delta);
       World.update(this._delta);
     };
 
