@@ -17,20 +17,6 @@ export function createApplication(canvasElement) {
 
 // IO & CONTENT LOADING FUNCTIONS
 /**
- * load in a mesh into the asset manager
- * @param name_in_content the name of the file being imported in the asset manager
- * @param file the actual .babylon file
- */
-export function loadMesh(name_in_content, file, meshTask) {
-  meshTask = Globals._asset_manager.addMeshTask(
-    name_in_content,
-    "",
-    "assets/",
-    file
-  );
-}
-
-/**
  * Load in all the content that has been added into the asset manager
  */
 export function loadAllContent() {
@@ -53,6 +39,19 @@ export function generateSunlight(brightness, colour, ground_colour) {
   light.intensity = brightness;
   light.diffuse = colour;
   light.groundColor = ground_colour;
+}
+
+/**
+ * generate fog within the world
+ * @param density the density/strength of the fog
+ * @param colour the colour of the fog
+ */
+export function generateFog(density, colour) {
+  Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+  Globals._scene.fogDensity = density;
+  Globals._scene.fogStart = 5.0;
+  Globals._scene.fogEnd = 900.0;
+  Globals._scene.fogColor = colour;
 }
 
 /**

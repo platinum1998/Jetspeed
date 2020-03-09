@@ -1,17 +1,17 @@
+import * as BABYLON from "babylonjs";
+import * as BABYLON_GUI from "babylonjs-gui"
 import { createApplication, loadAllContent } from "./helper"
-import { Globals } from "./globals";
+import { World } from "./world" 
+import { Globals } from "./globals"
+import { Input } from "./input";
 
 // The main game object
 class Game {
-  // Main elements
-  public _canvas: HTMLCanvasElement;
-  public _engine: BABYLON.Engine;
-
-  public _scene: BABYLON.Scene;
-
   // Stats
   public _delta: number;
   public _score: number;
+
+  private distance_travelled: BABYLON_GUI.TextBlock;
 
   /**
    * initialise the babylon engine and create a new empty scene
@@ -25,9 +25,19 @@ class Game {
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void 
   {
+    Globals._asset_manager = new BABYLON.AssetsManager(Globals._scene);
+
+    // initialise the world and input
+    Input.UpdateInput(); 
+    World.Initialise();
+
+    loadAllContent(); // TODO: put this in the world class
+
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {
       this._delta = Globals._engine.getDeltaTime();
+
+      World.update(this._delta);
     };
 
     // Updates
@@ -42,19 +52,20 @@ class Game {
 
     // run the render loop
     Globals._engine.runRenderLoop(() => {
-      Globals._scene.clearColor = new BABYLON.Color4(1, 0.9, 0.8, 1);
+      Globals._scene.clearColor = new BABYLON.Color4(0.65/2, 0.7/2, 0.8/2, 1);
       Globals._scene.render();
     });
 
     // the canvas/window resize event handler
     window.addEventListener("resize", () => {
-      self._engine.resize();
+      Globals._engine.resize();
     });
   }
 }
 
 /* -------------------------------- ENTRY POINT ------------------------------- */
 window.addEventListener("DOMContentLoaded", () => {
+
   // Create the game using the 'renderCanvas'
   let game = new Game("renderCanvas");
 
