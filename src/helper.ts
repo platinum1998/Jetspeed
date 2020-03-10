@@ -13,6 +13,9 @@ export function createApplication(canvasElement) {
   Globals._canvas = document.getElementById(canvasElement) as HTMLCanvasElement;
   Globals._engine = new BABYLON.Engine(Globals._canvas, true);
   Globals._scene = new BABYLON.Scene(Globals._engine);
+  Globals._scene.enablePhysics(new BABYLON.Vector3(0, -9.83, 0));
+
+  Globals._scene.collisionsEnabled = true;
 }
 
 // IO & CONTENT LOADING FUNCTIONS
@@ -42,26 +45,14 @@ export function generateSunlight(brightness, colour, ground_colour) {
 }
 
 /**
- * generate fog within the world
- * @param density the density/strength of the fog
- * @param colour the colour of the fog
- */
-export function generateFog(density, colour) {
-  Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-  Globals._scene.fogDensity = density;
-  Globals._scene.fogStart = 5.0;
-  Globals._scene.fogEnd = 900.0;
-  Globals._scene.fogColor = colour;
-}
-
-/**
  * Adds a point light into the world
  * @param brightness the intensity of the light source
  * @param pos the position of the light in the world
  * @param colour the colour of the point light
  */
-export function addPointLight(brightness, pos, colour) {
+export function addPointLight(brightness, pos, colour, radi) {
   var plight = new BABYLON.PointLight("pointLight", pos, Globals._scene);
   plight.intensity = brightness;
   plight.diffuse = colour;
+  plight.radius = radi;
 }
