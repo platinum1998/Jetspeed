@@ -19,12 +19,12 @@ export abstract class State {
 /**
  * Manages state conditions to prevent clashing
  */
-export class StateManager {
+export namespace StateManager {
 
     /**
      * Get state object from array
      */
-    private static GetState(state: State, state_arr) {
+    export function GetState(state: State, state_arr) {
         if (state instanceof State) 
             return state;
         else if (typeof state === "number") 
@@ -42,7 +42,7 @@ export class StateManager {
     /**
      * Switch states from state array
      */
-    public static SwitchStates(current_state, new_state) {
+    export function SwitchStates(current_state, new_state) {
         if (current_state instanceof State) {
             current_state.active = false;
             new_state.active = true;
@@ -54,7 +54,7 @@ export class StateManager {
     /**
      * Isolate state to solo
      */
-    public static IsolateState() {
+    export function IsolateState() {
 
     }
 }

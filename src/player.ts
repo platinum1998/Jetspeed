@@ -42,7 +42,7 @@ export class Player extends Actor {
     this.meshTask = Globals._asset_manager.addMeshTask(
       "jet rxtz",
       "",
-      "content/",
+      "assets/",
       "jet_rxtz.babylon"
     );
 

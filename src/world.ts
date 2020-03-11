@@ -8,6 +8,8 @@ import { Globals } from "./globals";
 import { Pickup } from "./pickup";
 import { GUI } from "./gui";
 
+import {Menu} from "./menu"
+
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
  */
@@ -21,6 +23,9 @@ export class World {
    * Initialise the game world
    */
   static Initialise() {
+    // TEMP!
+    let menu_test = new Menu();
+
     GUI.create();
 
     // lighting & fog
@@ -31,35 +36,40 @@ export class World {
     );
 
     // Audio
-    var music = new BABYLON.Sound(
-      "Soundtrack",
-      "content/audio/SoundTrack.wav",
-      Globals._scene,
-      null,
-      {
-        loop: true,
-        autoplay: true
-      }
-    );
-
-    this._pickup.push(new Pickup(new BABYLON.Vector3(-19, -1, 300)));
-    this._pickup.push(new Pickup(new BABYLON.Vector3(50, -1, 550)));
-    this._pickup.push(new Pickup(new BABYLON.Vector3(68, -1, 550)));
+    // var music = new BABYLON.Sound(
+    //   "Soundtrack",
+    //   "content/audio/SoundTrack.wav",
+    //   Globals._scene,
+    //   null,
+    //   {
+    //     loop: true,
+    //     autoplay: true
+    //   }
+    // );
 
     // import the map
     this.meshAssetTask = Globals._asset_manager.addMeshTask(
       "jet rxtz",
       "",
-      "content/maps/",
-      "level1.babylon"
+      "assets/",
+      "level0.babylon"
     );
     this.meshAssetTask.onSuccess = function(task) {
       console.log("Map Loaded Successfully!");
 
       task.loadedMeshes[0].position = new BABYLON.Vector3(0, -8, 0);
-      task.loadedMeshes[0].scaling = new BABYLON.Vector3(800, 800, 800);
+      task.loadedMeshes[0].scaling = new BABYLON.Vector3(1400,1400,1400);
       task.loadedMeshes[0].applyFog = true;
     };
+
+    // TEMP
+    let ground = BABYLON.MeshBuilder.CreatePlane("ground", {width: 300, height: 2000}, Globals._scene);
+    ground.rotate(new BABYLON.Vector3(1, 0, 0), BABYLON.Tools.ToRadians(90), BABYLON.Space.WORLD);
+    ground.position.y = -14;
+    let mat = new BABYLON.StandardMaterial("groun_mat", Globals._scene);
+    mat.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    mat.alpha = 0.4;
+    ground.material = mat;
 
     // instaniate the player
     this._player = new Player();
