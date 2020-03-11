@@ -3,7 +3,7 @@ import { Actor } from "./actor"
 import { Globals } from "./globals";
 import { BabylonFileLoaderConfiguration } from "babylonjs";
 
-export class PlayerCrashFX extends Actor {
+export class PickupFX extends Actor {
     public particleSystem: BABYLON.ParticleSystem;
 
     constructor(pos) {
@@ -43,7 +43,7 @@ export class PlayerCrashFX extends Actor {
 
         this.particleSystem.minEmitPower = 1;
         this.particleSystem.maxEmitPower = 3;
-        this.particleSystem.updateSpeed = 0.03;
+        this.particleSystem.updateSpeed = 0.1;
     }
    
 

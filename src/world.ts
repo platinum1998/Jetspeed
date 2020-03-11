@@ -65,7 +65,7 @@ export class World {
     this._player = new Player();
 
     Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-    Globals._scene.fogDensity = 0.05;
+    Globals._scene.fogDensity = 0.3;
     Globals._scene.fogStart = 5.0;
     Globals._scene.fogEnd = 900.0;
     Globals._scene.fogColor = new BABYLON.Color3(0.65 / 2, 0.7 / 2, 0.8 / 2);

@@ -7,7 +7,7 @@ import { Globals } from "./globals";
 import { Input } from "./input";
 import { World } from "./world";
 import { GUI } from "./gui";
-import { PlayerCrashFX } from "./playerCrashFX";
+import { PickupFX } from "./pickupFX";
 
 /**
  * The main player class for creating and updating the player
@@ -36,6 +36,7 @@ export class Player extends Actor {
     this.camera.heightOffset = 20;
     this.camera.cameraAcceleration = 0.005;
     this.camera.maxCameraSpeed = 20;
+    this.camera.fov = -80;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
@@ -48,7 +49,7 @@ export class Player extends Actor {
     var mesh;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, -1, -50);
+      mesh.position = new BABYLON.Vector3(0, -1, -80);
       mesh.scaling = new BABYLON.Vector3(100, 100, 100);
       mesh.checkCollisions = true;
       mesh.computeWorldMatrix(true);
@@ -61,6 +62,7 @@ export class Player extends Actor {
         10,
         true
       );
+      trail.position.z = trail.position.z + 2.5;
       var sourceMat = new BABYLON.StandardMaterial("sourceMat", Globals._scene);
       sourceMat.diffuseColor = new BABYLON.Color3(0.4, 0.7, 1.0);
       sourceMat.emissiveColor = new BABYLON.Color3(0.4, 0.7, 1.0);
@@ -68,7 +70,7 @@ export class Player extends Actor {
       trail.material = sourceMat;
 
       Globals._scene.registerBeforeRender(function() {
-        mesh.position.z += 2;
+        mesh.position.z += 3;
 
         for (let i = 0; i < World._pickup.length; i++) {
           if (mesh.intersectsMesh(World._pickup[i].pickupMesh, true)) {
@@ -76,7 +78,7 @@ export class Player extends Actor {
             GUI.distance_travelled_txt.text = String(GUI.distance);
             World._pickup[i].pickupMesh.dispose();
 
-            var ps = new PlayerCrashFX(World._pickup[i].pickupMesh.position);
+            var ps = new PickupFX(World._pickup[i].pickupMesh.position);
             ps.particleSystem.start();
           }
         }
@@ -103,11 +105,11 @@ export class Player extends Actor {
     }
     GUI.distance_travelled_txt.text = String(GUI.distance);
 
-    this.camera.position.z += 2;
+    this.camera.position.z += 3;
 
     if (Input.a_key) {
-      this.camera.position.x -= 0.06 * dT;
-      this.meshTask.loadedMeshes[0].position.x -= 0.06 * dT;
+      this.camera.position.x -= 0.08 * dT;
+      this.meshTask.loadedMeshes[0].position.x -= 0.08 * dT;
 
       this.meshTask.loadedMeshes[0].rotation = BABYLON.Vector3.Lerp(
         this.meshTask.loadedMeshes[0].rotation,
@@ -122,8 +124,8 @@ export class Player extends Actor {
       );
     }
     if (Input.d_key) {
-      this.camera.position.x += 0.06 * dT;
-      this.meshTask.loadedMeshes[0].position.x += 0.06 * dT;
+      this.camera.position.x += 0.08 * dT;
+      this.meshTask.loadedMeshes[0].position.x += 0.08 * dT;
 
       this.meshTask.loadedMeshes[0].rotation = BABYLON.Vector3.Lerp(
         this.meshTask.loadedMeshes[0].rotation,

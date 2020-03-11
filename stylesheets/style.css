@@ -8,8 +8,8 @@ body {
 }
 
 #renderCanvas {
-  width: 960px;
-  height: 540px;
+  width: 540px;
+  height: 960px;
   outline: none;
   position: absolute;
   display: block;
