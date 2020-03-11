@@ -11,6 +11,6 @@ export class Game extends State {
     }
 
     update(delta): void {
-            
+
     }
 }

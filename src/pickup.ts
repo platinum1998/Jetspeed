@@ -13,7 +13,7 @@ export class Pickup extends Actor {
         var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
         glowMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
-        this.pickupMesh = BABYLON.Mesh.CreateSphere("sphere3", 16, 1, Globals._scene);
+        this.pickupMesh = BABYLON.Mesh.CreateSphere("sphere3", 16, 2.5, Globals._scene);
         this.pickupMesh.position = pos;
         this.pickupMesh.material = glowMat;
         this.pickupMesh.checkCollisions = true;
