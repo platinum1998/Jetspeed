@@ -1,7 +1,6 @@
 import * as BABYLON from "babylonjs";
-import { Actor } from "./actor"
+import { Actor } from "./Actor"
 import { Globals } from "./globals";
-import { BabylonFileLoaderConfiguration } from "babylonjs";
 
 export class PickupFX extends Actor {
     public particleSystem: BABYLON.ParticleSystem;
@@ -16,7 +15,7 @@ export class PickupFX extends Actor {
         );
 
         this.particleSystem.particleTexture = new BABYLON.Texture(
-            "content/textures/flare.png",
+            "assets/flare.png",
             Globals._scene
         );
 

@@ -2,13 +2,16 @@
  * Class Importations
  */
 import * as BABYLON from "babylonjs";
+import * as BABYLON_UI from "babylonjs-gui";
 import { generateSunlight } from "./helper";
 import { Player } from "./player";
 import { Globals } from "./globals";
 import { Pickup } from "./pickup";
 import { GUI } from "./gui";
+import { LavaMaterial } from "./BabylonScripts/babylon.lavaMaterial";
 
-import {Menu} from "./menu"
+import { Menu } from "./menu";
+import { CollisionHierachy } from "./collision_handler";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
@@ -16,15 +19,18 @@ import {Menu} from "./menu"
 export class World {
   public static meshAssetTask: BABYLON.MeshAssetTask;
   public static _player: Player;
-
   public static _pickup: Array<Pickup> = Array<Pickup>();
+
+  public static _menu_test: Menu;
 
   /**
    * Initialise the game world
    */
   static Initialise() {
+    Globals.uiTexture = BABYLON_UI.AdvancedDynamicTexture.CreateFullscreenUI("UI")
+
     // TEMP!
-    let menu_test = new Menu();
+    this._menu_test = new Menu();
 
     GUI.create();
 
@@ -47,29 +53,22 @@ export class World {
     //   }
     // );
 
-    // import the map
-    this.meshAssetTask = Globals._asset_manager.addMeshTask(
-      "jet rxtz",
-      "",
-      "assets/",
-      "level0.babylon"
+    BABYLON.SceneLoader.ImportMesh(
+      "", // import all meshes from the babylon file ("[mesh_name]" to import specfic)
+      "assets/geometry/",
+      "level0.babylon",
+      Globals._scene,
+      function(meshes) {
+        meshes[0].position = new BABYLON.Vector3(0, -5, -80);
+        meshes[0].scaling = new BABYLON.Vector3(1000, 1000, 1000);
+        meshes[0].applyFog = true;
+      }
     );
-    this.meshAssetTask.onSuccess = function(task) {
-      console.log("Map Loaded Successfully!");
 
-      task.loadedMeshes[0].position = new BABYLON.Vector3(0, -8, 0);
-      task.loadedMeshes[0].scaling = new BABYLON.Vector3(1400,1400,1400);
-      task.loadedMeshes[0].applyFog = true;
-    };
-
-    // TEMP
-    let ground = BABYLON.MeshBuilder.CreatePlane("ground", {width: 300, height: 2000}, Globals._scene);
-    ground.rotate(new BABYLON.Vector3(1, 0, 0), BABYLON.Tools.ToRadians(90), BABYLON.Space.WORLD);
-    ground.position.y = -14;
-    let mat = new BABYLON.StandardMaterial("groun_mat", Globals._scene);
-    mat.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    mat.alpha = 0.4;
-    ground.material = mat;
+    // Instanitate the collision hierachy @param: number of colliders
+    CollisionHierachy.Generate(1000);
+    //CollisionHierachy.addCollider("left_wall");
+    //CollisionHierachy.getColliderByName("left_wall").position.x = 5;
 
     // instaniate the player
     this._player = new Player();
@@ -86,9 +85,10 @@ export class World {
    * @param dT delta time
    */
   static update(dT) {
+    this._menu_test.update(dT);
+
     this._player.update(dT);
-    
-    for(let i = 0; i < this._pickup.length; i++)
-        this._pickup[i].update(dT);
+
+    for (let i = 0; i < this._pickup.length; i++) this._pickup[i].update(dT);
   }
 }

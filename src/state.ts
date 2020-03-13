@@ -1,4 +1,4 @@
-import { Actor } from "./actor";
+import { Actor } from "./Actor";
 
 /**
  * Contains game state information

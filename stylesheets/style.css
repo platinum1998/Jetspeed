@@ -1,3 +1,8 @@
+@font-face { 
+  font-family: 'SquareFont';
+  src: url('./assets/fonts/Square.ttf') format('truetype'); 
+}
+
 html,
 body {
   overflow: hidden;
@@ -20,3 +25,4 @@ body {
   right: 0;
   touch-action: none;
 }
+

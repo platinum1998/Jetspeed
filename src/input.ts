@@ -28,15 +28,14 @@ export class Input {
           Input.tap = true;
           break;
         case BABYLON.PointerEventTypes.POINTERUP:
-          Input.tap = false;
+          Input.tap = true;
           break;
       }
     });
 
     window.addEventListener("mousemove", function() {
-      Globals._scene.pointerX = Input.mouse_x;
-      Globals._scene.pointerY = Input.mouse_y;
-      console.log(Input.mouse_x + " " + Input.mouse_y);
+      Input.mouse_x = Globals._scene.pointerX;
+      Input.mouse_y = Globals._scene.pointerY;
     });
   }
 }
