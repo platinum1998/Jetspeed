@@ -58,7 +58,7 @@ export class World {
       "assets/geometry/",
       "level0.babylon",
       Globals._scene,
-      function(meshes) {
+      function (meshes) {
         meshes[0].position = new BABYLON.Vector3(0, -5, -80);
         meshes[0].scaling = new BABYLON.Vector3(1000, 1000, 1000);
         meshes[0].applyFog = true;
@@ -72,6 +72,15 @@ export class World {
 
     // instaniate the player
     this._player = new Player();
+
+    // TEMP GROUND
+    let material = new BABYLON.StandardMaterial("reflection", Globals._scene);
+    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    material.alpha = 0.35;
+    let ground = BABYLON.MeshBuilder.CreatePlane("Ground", { width: 500, height: 2000 }, Globals._scene);
+    ground.material = material;
+    ground.rotate(new BABYLON.Vector3(1, 0, 0), BABYLON.Tools.ToRadians(90), BABYLON.Space.WORLD);
+    ground.position.y = -9.5;
 
     Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     Globals._scene.fogDensity = 0.3;

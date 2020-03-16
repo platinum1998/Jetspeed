@@ -51,13 +51,13 @@ export class Player extends Actor {
 
     this.camera = new BABYLON.FreeCamera(
       "player_camera",
-      new BABYLON.Vector3(0, -1, -100),
+      new BABYLON.Vector3(0, 2, -120),
       Globals._scene
     );
     this.camera.fov = -80;
     this.camera.inputs.clear();
 
-    this.speed = 1;
+    this.speed = 2;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
@@ -71,7 +71,7 @@ export class Player extends Actor {
     var world_coords;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, -5, -75);
+      mesh.position = new BABYLON.Vector3(0, -5, -100);
       mesh.scaling = new BABYLON.Vector3(100, 100, 100);
       mesh.checkCollisions = true;
 
@@ -80,7 +80,7 @@ export class Player extends Actor {
         mesh,
         Globals._scene,
         0.0075,
-        5,
+        8,
         true
       );
       trail.position.z = trail.position.z + 2.5;
@@ -90,8 +90,8 @@ export class Player extends Actor {
       sourceMat.alpha = 0.5;
       trail.material = sourceMat;
 
-      Globals._scene.registerBeforeRender(function() {
-        mesh.position.z += 1;
+      Globals._scene.registerBeforeRender(function () {
+        mesh.position.z += 2;
 
         // loop through the collider Hash-Map
         CollisionHierachy.bounding_boxes.forEach(
@@ -139,8 +139,8 @@ export class Player extends Actor {
       this.delay = 0;
     }
     GUI.distance_travelled_txt.text = String(GUI.distance);
-
     this.camera.position.z += this.speed;
+
     if (Input.a_key) {
       this.camera.position.x -= 0.08 * dT;
       this.meshTask.loadedMeshes[0].position.x -= 0.08 * dT;
