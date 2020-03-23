@@ -34,7 +34,7 @@ export class SceneParser {
     constructor(rootNode: Node) {
         this.module_name = "module_0";
 
-        this.processTransformNodes(rootNode);
+        //this.processTransformNodes(rootNode);
         this.processModuleNodes(rootNode);
     }
 
@@ -85,8 +85,6 @@ export class SceneParser {
         rootMapNode.getChildren().forEach((node: Node) => {
             if(node.name == `${namePrefix}`) {             
                 let collision_tree = node.getChildren(n => {
-                    return n.name == "sequences";
-                }, true)[0].getChildren(n => {
                     return n.name == "wall_collision";
                 }, true)[0];
                 
@@ -112,12 +110,8 @@ export class SceneParser {
 
         rootMapNode.getChildren().forEach((node: Node) => {
             if(node.name == `${namePrefix}`) {             
-                let sequences = node.getChildren(n => {
-                    return n.name == "sequences";
-                }, true)[0];
-
-                let geometry = (sequences.getChildren(n => {
-                    return n.name == "main_geo";
+                let geometry = (node.getChildren(n => {
+                    return n.name == "module_0_geo";
                 }, true)[0] as BABYLON.Mesh);
 
                 GameData.modules.push(new Module(namePrefix, geometry));
