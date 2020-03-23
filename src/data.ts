@@ -1,3 +1,6 @@
+import * as BABYLON from "babylonjs";
+import { Module } from "./module";
+
 /**
  * List of rewards
  */
@@ -26,7 +29,18 @@ export class UserData {
     static xp = 0;
     static best_score = 0;
 
+    static ClearLocalStorage() {
+        localStorage.clear();
+    }
     static CheckForLocalStorage(uri) {
         // Load and assign data here if there is any...
     }
+}
+
+export class GameData {
+    static number_of_modules: number = 3;
+    static number_of_hoops_per_module: number = 2;
+
+    static modules: Array<Module> = new Array<Module>();
+    static collisions: Array<BABYLON.Mesh> = new Array<BABYLON.Mesh>();
 }

@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "babylonjs": "^4.1.0",
-    "babylonjs-gui": "^4.1.0"
+    "babylonjs-gui": "^4.1.0",
+    "babylonjs-loaders": "^4.1.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",

@@ -2,6 +2,7 @@
  * Class Importations
  */
 import * as BABYLON from "babylonjs";
+import "babylonjs-loaders";
 import * as BABYLON_UI from "babylonjs-gui";
 import { generateSunlight } from "./helper";
 import { Player } from "./player";
@@ -9,9 +10,9 @@ import { Globals } from "./globals";
 import { Pickup } from "./pickup";
 import { GUI } from "./gui";
 import { LavaMaterial } from "./BabylonScripts/babylon.lavaMaterial";
-
 import { Menu } from "./menu";
-import { CollisionHierachy } from "./collision_handler";
+import { SceneParser } from "./sceneParser";
+import { GameData } from "./data";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
@@ -20,8 +21,8 @@ export class World {
   public static meshAssetTask: BABYLON.MeshAssetTask;
   public static _player: Player;
   public static _pickup: Array<Pickup> = Array<Pickup>();
-
   public static _menu_test: Menu;
+  public static _sceneParser: SceneParser;
 
   /**
    * Initialise the game world
@@ -42,45 +43,50 @@ export class World {
     );
 
     // Audio
-    // var music = new BABYLON.Sound(
-    //   "Soundtrack",
-    //   "content/audio/SoundTrack.wav",
-    //   Globals._scene,
-    //   null,
-    //   {
-    //     loop: true,
-    //     autoplay: true
-    //   }
-    // );
-
-    BABYLON.SceneLoader.ImportMesh(
-      "", // import all meshes from the babylon file ("[mesh_name]" to import specfic)
-      "assets/geometry/",
-      "level0.babylon",
+    var music = new BABYLON.Sound(
+      "Soundtrack",
+      "assets/sfx/soundtrack.wav",
       Globals._scene,
-      function (meshes) {
-        meshes[0].position = new BABYLON.Vector3(0, -5, -80);
-        meshes[0].scaling = new BABYLON.Vector3(1000, 1000, 1000);
-        meshes[0].applyFog = true;
+      null,
+      {
+        loop: true,
+        autoplay: true
       }
     );
+    music.setVolume(0.02);
 
-    // Instanitate the collision hierachy @param: number of colliders
-    CollisionHierachy.Generate(1000);
-    //CollisionHierachy.addCollider("left_wall");
-    //CollisionHierachy.getColliderByName("left_wall").position.x = 5;
+    // Globals._scene.debugLayer.show(); // DEBUGGING PURPOSES  
+
+    BABYLON.SceneLoader.Append
+      (
+        "assets/scenes/",
+        "scene.gltf",
+        Globals._scene,
+        function (scene) {
+          Globals._scene = scene;
+          console.log("READY");
+        }
+      );
+
+    Globals._scene.executeWhenReady(() => {
+      let root = Globals._scene.getNodeByName("__root__");
+
+      World._sceneParser = new SceneParser(root);
+      World._sceneParser.updateWorldCollision(root);
+
+      let mesh = Globals._scene.getNodeByName("main_geo") as BABYLON.Mesh;
+      mesh.scaling.x = -500;
+      mesh.scaling.y = 500;
+      mesh.scaling.z = -500;
+      mesh.applyFog = true;
+    });
+
+    if (Globals._scene.activeCamera == undefined) {
+      Globals._scene.createDefaultCamera(false, true);
+    }
 
     // instaniate the player
     this._player = new Player();
-
-    // TEMP GROUND
-    let material = new BABYLON.StandardMaterial("reflection", Globals._scene);
-    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    material.alpha = 0.35;
-    let ground = BABYLON.MeshBuilder.CreatePlane("Ground", { width: 500, height: 2000 }, Globals._scene);
-    ground.material = material;
-    ground.rotate(new BABYLON.Vector3(1, 0, 0), BABYLON.Tools.ToRadians(90), BABYLON.Space.WORLD);
-    ground.position.y = -9.5;
 
     Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     Globals._scene.fogDensity = 0.3;
@@ -98,6 +104,7 @@ export class World {
 
     this._player.update(dT);
 
-    for (let i = 0; i < this._pickup.length; i++) this._pickup[i].update(dT);
+    for (let i = 0; i < this._pickup.length; i++)
+      this._pickup[i].update(dT);
   }
 }

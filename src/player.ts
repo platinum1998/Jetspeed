@@ -8,9 +8,7 @@ import { Input } from "./input";
 import { World } from "./world";
 import { GUI } from "./gui";
 import { PickupFX } from "./pickupFX";
-import { CollisionHierachy } from "./collision_handler";
-import { WindowsMotionController } from "babylonjs";
-import { kernelBlurPixelShader } from "babylonjs/Shaders/kernelBlur.fragment";
+import { GameData } from "./data";
 
 /**
  * This handles managing the player in game
@@ -26,8 +24,6 @@ export class PlayerManager {
     for (let i = 0; i < player_components.length; i++) {
       player_components[i].dispose();
     }
-
-    CollisionHierachy.DestroyHierachy();
   }
 }
 
@@ -51,19 +47,20 @@ export class Player extends Actor {
 
     this.camera = new BABYLON.FreeCamera(
       "player_camera",
-      new BABYLON.Vector3(0, 2, -120),
+      new BABYLON.Vector3(0, 5, -530),
       Globals._scene
     );
     this.camera.fov = -80;
     this.camera.inputs.clear();
+    Globals._scene.activeCamera = this.camera;
 
-    this.speed = 2;
+    this.speed = 3;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
       "jet rxtz",
       "",
-      "assets/",
+      "assets/geometry/",
       "jet_rxtz.babylon"
     );
 
@@ -71,37 +68,18 @@ export class Player extends Actor {
     var world_coords;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, -5, -100);
+      mesh.position = new BABYLON.Vector3(0, 0, -500);
       mesh.scaling = new BABYLON.Vector3(100, 100, 100);
       mesh.checkCollisions = true;
 
-      var trail = new BABYLON.TrailMesh(
-        "new",
-        mesh,
-        Globals._scene,
-        0.0075,
-        8,
-        true
-      );
-      trail.position.z = trail.position.z + 2.5;
-      var sourceMat = new BABYLON.StandardMaterial("sourceMat", Globals._scene);
-      sourceMat.diffuseColor = new BABYLON.Color3(0.4, 0.7, 1.0);
-      sourceMat.emissiveColor = new BABYLON.Color3(0.4, 0.7, 1.0);
-      sourceMat.alpha = 0.5;
-      trail.material = sourceMat;
-
       Globals._scene.registerBeforeRender(function () {
-        mesh.position.z += 2;
+        mesh.position.z += 3;
 
-        // loop through the collider Hash-Map
-        CollisionHierachy.bounding_boxes.forEach(
-          (value: BABYLON.Mesh, key: string) => {
-            if (mesh.intersectsMesh(value)) {
-              // if the player hits a collider... kill him!
-              PlayerManager.kill([mesh, trail]);
-            }
+        for (let i = 0; i < GameData.collisions.length; i++) {
+          if (mesh.intersectsMesh(GameData.collisions[i], true)) {
+            mesh.dispose(); 
           }
-        );
+        }
 
         // Loop through the pickups in the world
         for (let i = 0; i < World._pickup.length; i++) {
