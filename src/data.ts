@@ -38,6 +38,7 @@ export class UserData {
 }
 
 export class GameData {
+    static world_scale: number = 500;
     static number_of_modules: number = 3;
     static number_of_hoops_per_module: number = 2;
 

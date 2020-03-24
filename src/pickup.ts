@@ -4,7 +4,6 @@ import { Globals } from "./globals";
 import { addPointLight } from "./helper";
 
 export class Pickup extends Actor {
-    private glowLayer: BABYLON.GlowLayer;
     public pickupMesh: BABYLON.Mesh;
 
     constructor(pos) {
@@ -17,10 +16,6 @@ export class Pickup extends Actor {
         this.pickupMesh.position = pos;
         this.pickupMesh.material = glowMat;
         this.pickupMesh.checkCollisions = true;
-
-        // this.glowLayer = new BABYLON.GlowLayer("glow", Globals._scene);
-        // this.glowLayer.addIncludedOnlyMesh(this.pickupMesh);
-        // this.glowLayer.intensity = 2.5;
     }
 
     update(dT: number): void {}  

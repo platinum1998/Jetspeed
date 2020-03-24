@@ -34,7 +34,13 @@ export class SceneParser {
     constructor(rootNode: Node) {
         this.module_name = "module_0";
 
-        //this.processTransformNodes(rootNode);
+        let mesh = Globals._scene.getNodeByName("module_0_geo") as BABYLON.Mesh;
+        mesh.scaling.x = -500;
+        mesh.scaling.y = 500;
+        mesh.scaling.z = -500;
+        mesh.applyFog = true;
+
+        this.processTransformNodes(rootNode);
         this.processModuleNodes(rootNode);
     }
 
@@ -45,29 +51,17 @@ export class SceneParser {
     private processTransformNodes(rootMapNode: Node) {
         this._player_start = (rootMapNode.getChildren(n => {
             return n.name == "player_start_loc";
-        }, true)[0] as TransformNode).position;
+        }, true)[0] as TransformNode).position;  
 
-        const namePrefix = this.module_name;
-        rootMapNode.getChildren().forEach((node: Node) => {
-            if(node.name == `${namePrefix}`) {             
-                let sequences = node.getChildren(n => {
-                    return n.name == "sequences";
-                }, true)[0];
+        let hoops_node = Globals._scene.getNodeByName("hoops");
+        hoops_node.getChildren().forEach((node: Node) => {
+            this._hoop_locations.push(node as BABYLON.TransformNode);
+        });
 
-                let hoop_locators = (sequences.getChildren(n => {
-                    return n.name == "hoops";
-                }, true)[0] as BABYLON.Mesh);
-
-                for(let i = 0; i < GameData.number_of_hoops_per_module; i++) {
-                    this._hoop_locations.push(
-                        (sequences.getChildren(n => {
-                            if(n.name == `hoop_loc_${i}`) 
-                                return n.name == `hoop_loc_${i}`;
-                        }, true)[0] as BABYLON.TransformNode)
-                    );
-                }
-            }
-        });    
+        let pickups_node = Globals._scene.getNodeByName("pickups");
+        pickups_node.getChildren().forEach((node: Node) => {
+            this._pickup_locations.push(node as BABYLON.TransformNode);
+        });
     }
 
     /**
@@ -115,6 +109,8 @@ export class SceneParser {
                 }, true)[0] as BABYLON.Mesh);
 
                 GameData.modules.push(new Module(namePrefix, geometry));
+                GameData.modules[GameData.modules.length - 1].instanitateHoops(this._hoop_locations);
+                GameData.modules[GameData.modules.length - 1].instanitatePickups(this.pickup_locations);
             }
         });     
     }

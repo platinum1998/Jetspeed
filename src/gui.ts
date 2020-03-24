@@ -9,7 +9,7 @@ export class GUI {
   public static create(): void {
 
     this.distance_travelled_txt = new BABYLON_UI.TextBlock();
-    this.distance_travelled_txt.text = String(this.distance);
+    this.distance_travelled_txt.text = "" + this.distance;
     this.distance_travelled_txt.color = "white";
     this.distance_travelled_txt.fontSize = 54;
     this.distance_travelled_txt.fontFamily = "SquareFont";

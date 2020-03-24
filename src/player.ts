@@ -54,6 +54,7 @@ export class Player extends Actor {
     this.camera.inputs.clear();
     Globals._scene.activeCamera = this.camera;
 
+    this.delay = 0;
     this.speed = 3;
 
     // if the mesh loads succesfully, perform the code below
@@ -116,6 +117,7 @@ export class Player extends Actor {
       GUI.distance++;
       this.delay = 0;
     }
+
     GUI.distance_travelled_txt.text = String(GUI.distance);
     this.camera.position.z += this.speed;
 

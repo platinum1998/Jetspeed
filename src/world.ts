@@ -9,10 +9,8 @@ import { Player } from "./player";
 import { Globals } from "./globals";
 import { Pickup } from "./pickup";
 import { GUI } from "./gui";
-import { LavaMaterial } from "./BabylonScripts/babylon.lavaMaterial";
 import { Menu } from "./menu";
 import { SceneParser } from "./sceneParser";
-import { GameData } from "./data";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
@@ -80,6 +78,7 @@ export class World {
       mesh.scaling.z = -500;
       mesh.applyFog = true;
     });
+
 
     if (Globals._scene.activeCamera == undefined) {
       Globals._scene.createDefaultCamera(false, true);
