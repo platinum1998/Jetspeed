@@ -4,6 +4,7 @@ import { Globals } from "./globals";
 import { GameData } from "./data";
 import { Module } from "./module";
 import { World } from "./world";
+import { Content } from "./ContentManager"
 
 export class SceneParser {
     /**
@@ -33,16 +34,17 @@ export class SceneParser {
      * @param rootNode the scene graphs root node
      */
     constructor(rootNode: Node) {
+        // TEMP
         this.module_name = "module_0";
-
         let mesh = Globals._scene.getNodeByName("module_geo_0") as BABYLON.Mesh;
         mesh.scaling.x = -500;
         mesh.scaling.y = 500;
-        mesh.scaling.z = 500;
-        mesh.applyFog = true;
+        mesh.scaling.z = -500;
+        mesh.material = Content.scene_material;
 
         this.processTransformNodes(rootNode);
         this.processModuleNodes(rootNode);
+        this.processSequenceNodes(Globals._scene.getNodeByName("sequences"));
     }
 
     /**
@@ -63,8 +65,6 @@ export class SceneParser {
         pickups_node.getChildren().forEach((node: Node) => {
             this._pickup_locations.push(node as BABYLON.TransformNode);
         });
-
-        console.log(this._pickup_locations.length);
     }
 
     /**
@@ -73,7 +73,7 @@ export class SceneParser {
      */
     public updateWorldCollision(rootMapNode: Node) {
         const namePrefix = this.module_name;
-        
+
         let mat = new BABYLON.StandardMaterial("", Globals._scene);
         mat.diffuseColor = new BABYLON.Color3(1, 1, 1);
         mat.alpha = 0.0;
@@ -81,7 +81,7 @@ export class SceneParser {
         let collision_geometry_group = Globals._scene.getNodeByName("wall_collision") as BABYLON.Mesh;
         collision_geometry_group.scaling.x = -500;
         collision_geometry_group.scaling.y = 500;
-        collision_geometry_group.scaling.z = 500;
+        collision_geometry_group.scaling.z = -500;
         collision_geometry_group.material = mat;
 
         collision_geometry_group.getChildren().forEach((collider: Node) => {
@@ -124,5 +124,28 @@ export class SceneParser {
         });
 
         this.registerObserverPattern();
+    }
+
+    /**
+     * Process sequence nodes that will animate as player gets close
+     * @param rootNode The main root node for each anim child
+     */
+    private processSequenceNodes(rootNode: Node) {
+        //let num_sequences = rootNode.getChildren().length;
+        let seq = Globals._scene.getNodeByName("sequences") as BABYLON.Mesh;
+        seq.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);
+
+        // TODO - rename typos for each sequence geo node
+        seq.material = Content.scene_material;
+
+        // for (let i = 0; i < num_sequences; i++) {
+        //     rootNode.getChildren().forEach((node: Node) => {
+        //         if (node.name == `seq_${i.toString()}`) {
+        //             let seq_geo = node as BABYLON.Mesh;
+        //             seq_geo.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);
+        //             seq_geo.material = Content.scene_material;
+        //         }
+        //     });
+        // }
     }
 }
