@@ -38,7 +38,7 @@ export class SceneParser {
         let mesh = Globals._scene.getNodeByName("module_geo_0") as BABYLON.Mesh;
         mesh.scaling.x = -500;
         mesh.scaling.y = 500;
-        mesh.scaling.z = -500;
+        mesh.scaling.z = 500;
         mesh.applyFog = true;
 
         this.processTransformNodes(rootNode);
@@ -81,7 +81,7 @@ export class SceneParser {
         let collision_geometry_group = Globals._scene.getNodeByName("wall_collision") as BABYLON.Mesh;
         collision_geometry_group.scaling.x = -500;
         collision_geometry_group.scaling.y = 500;
-        collision_geometry_group.scaling.z = -500;
+        collision_geometry_group.scaling.z = 500;
         collision_geometry_group.material = mat;
 
         collision_geometry_group.getChildren().forEach((collider: Node) => {

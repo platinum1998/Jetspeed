@@ -9,7 +9,6 @@ import { GUI } from "./gui";
 import { GameData, UserData } from "./data";
 import { IPickupDelegates, IPickup } from "./pickup";
 import { IBoosterDelegates, IBooster } from "./booster";
-import { BoundingInfo } from "babylonjs";
 
 /**
  * The main player class for creating and updating the players movement
@@ -21,7 +20,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
   public speed: number;
   private delay: number;
   public meshTask: BABYLON.MeshAssetTask;
-  private camera: BABYLON.FreeCamera;
+  public camera: BABYLON.FreeCamera;
 
   // TODO: Move to a content manager class
   private pickup_snd: BABYLON.Sound; 
@@ -81,12 +80,12 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
           }
         }
         
-        for (let j = 0; j < GameData._pickups.length; j++) {
-          if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
-            GameData._pickups[j].pickupMesh.dispose();
-            GameData._pickups[j].firePickupEvent();
-          }
-        }
+        // for (let j = 0; j < GameData._pickups.length; j++) {
+        //   if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
+        //     GameData._pickups[j].pickupMesh.dispose();
+        //     GameData._pickups[j].firePickupEvent();
+        //   }
+        // }
 
         for (let j = 0; j < GameData._booster.length; j++) {
           if (mesh.intersectsMesh(GameData._booster[j].boosterMesh, true)) {
