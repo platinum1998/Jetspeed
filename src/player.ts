@@ -5,32 +5,16 @@ import * as BABYLON from "babylonjs";
 import { Actor } from "./Actor";
 import { Globals } from "./globals";
 import { Input } from "./input";
-import { World } from "./world";
 import { GUI } from "./gui";
-import { PickupFX } from "./pickupFX";
-import { GameData } from "./data";
-
-/**
- * This handles managing the player in game
- */
-export class PlayerManager {
-  /**
-   *
-   */
-  static kill(player_components = []): void {
-    var ps = new PickupFX(player_components[0].position);
-    ps.particleSystem.start();
-
-    for (let i = 0; i < player_components.length; i++) {
-      player_components[i].dispose();
-    }
-  }
-}
+import { GameData, UserData } from "./data";
+import { IPickupDelegates, IPickup } from "./pickup";
+import { IBoosterDelegates, IBooster } from "./booster";
+import { BoundingInfo } from "babylonjs";
 
 /**
  * The main player class for creating and updating the players movement
  */
-export class Player extends Actor {
+export class Player extends Actor implements IPickupDelegates, IBoosterDelegates {
   /**
    * Variables and Objects
    */
@@ -39,11 +23,26 @@ export class Player extends Actor {
   public meshTask: BABYLON.MeshAssetTask;
   private camera: BABYLON.FreeCamera;
 
+  // TODO: Move to a content manager class
+  private pickup_snd: BABYLON.Sound; 
+  private boost_snd: BABYLON.Sound;
+  /////////////////////////////////////
+
   /**
    * Initialise variables and objects here
    */
   constructor() {
     super(new BABYLON.Vector3(0, 1, 0));
+
+    // TODO: Move to a content manager class
+    this.pickup_snd = new BABYLON.Sound("pickup", "assets/sfx/pickup.wav", Globals._scene);
+    this.pickup_snd.loop = false;
+    this.pickup_snd.setVolume(0.15);
+
+    this.boost_snd = new BABYLON.Sound("boost", "assets/sfx/boost.wav", Globals._scene);
+    this.boost_snd.loop = false;
+    this.boost_snd.setVolume(0.15);
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     this.camera = new BABYLON.FreeCamera(
       "player_camera",
@@ -78,24 +77,22 @@ export class Player extends Actor {
 
         for (let i = 0; i < GameData.collisions.length; i++) {
           if (mesh.intersectsMesh(GameData.collisions[i], true)) {
-            mesh.dispose(); 
+            mesh.dispose();
+          }
+        }
+        
+        for (let j = 0; j < GameData._pickups.length; j++) {
+          if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
+            GameData._pickups[j].pickupMesh.dispose();
+            GameData._pickups[j].firePickupEvent();
           }
         }
 
-        // Loop through the pickups in the world
-        for (let i = 0; i < World._pickup.length; i++) {
-          // if the player meshs hits a pickup mesh..
-          if (mesh.intersectsMesh(World._pickup[i].pickupMesh, true)) {
-            // destroy the pickup and simulate the particles
-            GUI.distance = GUI.distance + 10;
-            GUI.distance_travelled_txt.text = String(GUI.distance);
-            World._pickup[i].pickupMesh.dispose();
-
-            var ps = new PickupFX(World._pickup[i].pickupMesh.position);
-            ps.particleSystem.start();
+        for (let j = 0; j < GameData._booster.length; j++) {
+          if (mesh.intersectsMesh(GameData._booster[j].boosterMesh, true)) {
+            GameData._booster[j].fireOnBoosterEvent();
           }
         }
-        ///////////////////////////////////////////////////
 
         if (!Input.a_key && !Input.d_key) {
           mesh.rotation = BABYLON.Vector3.Lerp(
@@ -160,4 +157,22 @@ export class Player extends Actor {
       );
     }
   }
+
+  public setObserver(arg: any) {
+    arg.registerObserver(this);
+  }
+
+  /**
+   * Events 
+   */
+  onPickup(): void {
+    this.pickup_snd.play();
+    this.pickup_snd.onended = function() { this.pickup_snd.stop(); }
+
+    UserData.IncreaseTokenCount(1);
+  }
+  onBoost(): void {
+    this.boost_snd.play();
+  }
+  /***/
 }

@@ -1,5 +1,8 @@
 import * as BABYLON from "babylonjs";
 import { Module } from "./module";
+import { GUI } from "./gui";
+import { Pickup } from "./pickup";
+import { Booster } from "./booster";
 
 /**
  * List of rewards
@@ -29,6 +32,10 @@ export class UserData {
     static xp = 0;
     static best_score = 0;
 
+    static IncreaseTokenCount(add: number) {
+        UserData.tokens = UserData.tokens + add;
+        GUI.tokens_txt.text = "Tokens: " + UserData.tokens;
+    }
     static ClearLocalStorage() {
         localStorage.clear();
     }
@@ -42,6 +49,8 @@ export class GameData {
     static number_of_modules: number = 3;
     static number_of_hoops_per_module: number = 2;
 
+    static _pickups: Array<Pickup> = new Array<Pickup>();
+    static _booster: Array<Booster> = new Array<Booster>();
     static modules: Array<Module> = new Array<Module>();
     static collisions: Array<BABYLON.Mesh> = new Array<BABYLON.Mesh>();
 }

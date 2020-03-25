@@ -15,7 +15,7 @@ export class PickupFX extends Actor {
         );
 
         this.particleSystem.particleTexture = new BABYLON.Texture(
-            "assets/flare.png",
+            "assets/textures/flare.png",
             Globals._scene
         );
 

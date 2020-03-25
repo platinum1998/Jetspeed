@@ -11,6 +11,8 @@ import { Pickup } from "./pickup";
 import { GUI } from "./gui";
 import { Menu } from "./menu";
 import { SceneParser } from "./sceneParser";
+import { GameData } from "./data";
+import { Game } from "./game";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
@@ -71,14 +73,7 @@ export class World {
 
       World._sceneParser = new SceneParser(root);
       World._sceneParser.updateWorldCollision(root);
-
-      let mesh = Globals._scene.getNodeByName("module_0_geo") as BABYLON.Mesh;
-      mesh.scaling.x = -500;
-      mesh.scaling.y = 500;
-      mesh.scaling.z = -500;
-      mesh.applyFog = true;
     });
-
 
     if (Globals._scene.activeCamera == undefined) {
       Globals._scene.createDefaultCamera(false, true);

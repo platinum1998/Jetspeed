@@ -1,12 +1,23 @@
 import * as BABYLON from "babylonjs";
 import { Actor } from "./Actor";
 import { Globals } from "./globals";
-import { addPointLight } from "./helper";
+import { ISubject } from "./observer";
 
-export class Pickup extends Actor {
+export interface IPickup extends ISubject {
+    registerObserver(x: IPickupDelegates): void; 
+    notifyOnPickup(): void;
+}
+
+export interface IPickupDelegates {
+    onPickup(): void;
+}
+
+export class Pickup extends Actor implements IPickup {
+    private _delegates: IPickupDelegates[] = [];
     public pickupMesh: BABYLON.Mesh;
-
-    constructor(pos) {
+    
+    constructor(pos) 
+    {
         super(new BABYLON.Vector3(0, 0, 0));
 
         var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
@@ -17,6 +28,22 @@ export class Pickup extends Actor {
         this.pickupMesh.material = glowMat;
         this.pickupMesh.checkCollisions = true;
     }
-
+ 
     update(dT: number): void {}  
+        
+    registerObserver(x: IPickupDelegates): void {
+        this._delegates.push(x);
+    }
+
+    notifyOnPickup(): void {
+        for(let x of this._delegates) {
+            if(x.onPickup)
+                x.onPickup();
+        }
+    }
+
+    firePickupEvent() {
+        console.log("Pickup event fired!");
+        this.notifyOnPickup();
+    }
 }

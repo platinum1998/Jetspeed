@@ -212,7 +212,7 @@ export class Menu extends State {
         this.textblocks[tb.BEST + 2].top = -580;
 
         // TOKENS
-        this.textblocks[tb.BEST + 3] = new BABYLON.GUI.TextBlock("tokens_value", "13");
+        this.textblocks[tb.BEST + 3] = new BABYLON.GUI.TextBlock("tokens_value", UserData.tokens.toString());
         this.textblocks[tb.BEST + 3].fontFamily = "SquareFont";
         this.textblocks[tb.BEST + 3].isEnabled = false;
         this.textblocks[tb.BEST + 3].color = "#616161";
