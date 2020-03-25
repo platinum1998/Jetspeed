@@ -1,7 +1,7 @@
 import * as BABYLON from "babylonjs";
 import * as BABYLON_GUI from "babylonjs-gui"
 import { createApplication, loadAllContent } from "./helper"
-import { World } from "./world" 
+import { World } from "./world"
 import { Globals } from "./globals"
 import { Input } from "./input";
 
@@ -23,12 +23,11 @@ class Game {
   }
 
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
-  initialise(): void 
-  {
+  initialise(): void {
     Globals._asset_manager = new BABYLON.AssetsManager(Globals._scene);
 
     // initialise the world and input
-    Input.UpdateInput(); 
+    Input.UpdateInput();
     World.Initialise();
 
     loadAllContent(); // TODO: put this in the world class
@@ -41,7 +40,7 @@ class Game {
     };
 
     // Updates
-    Globals._scene.registerBeforeRender(function() {
+    Globals._scene.registerBeforeRender(function () {
       update();
     });
   }
@@ -52,7 +51,7 @@ class Game {
 
     // run the render loop
     Globals._engine.runRenderLoop(() => {
-      Globals._scene.clearColor = new BABYLON.Color4(0.65/2, 0.7/2, 0.8/2, 1);
+      Globals._scene.clearColor = new BABYLON.Color4(0.25, 0.25, 0.26, 1);
       Globals._scene.render();
     });
 
