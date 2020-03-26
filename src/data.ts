@@ -31,10 +31,15 @@ export class UserData {
     static jets = [];   // Indices
     static xp = 0;
     static best_score = 0;
+    static boosted: boolean;
 
     static IncreaseTokenCount(add: number) {
-        UserData.tokens = UserData.tokens + add;
-        GUI.tokens_txt.text = "Tokens: " + UserData.tokens;
+        UserData.boosted = false;
+        if(UserData.boosted == false) {
+            UserData.tokens = UserData.tokens + add;
+            GUI.tokens_txt.text = "Tokens: " + UserData.tokens;
+            UserData.boosted = true;
+        } 
     }
     static ClearLocalStorage() {
         localStorage.clear();

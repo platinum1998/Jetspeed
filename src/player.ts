@@ -80,12 +80,12 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
           }
         }
         
-        // for (let j = 0; j < GameData._pickups.length; j++) {
-        //   if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
-        //     GameData._pickups[j].pickupMesh.dispose();
-        //     GameData._pickups[j].firePickupEvent();
-        //   }
-        // }
+        for (let j = 0; j < GameData._pickups.length; j++) {
+          if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
+            GameData._pickups[j].pickupMesh.dispose();
+            GameData._pickups[j].firePickupEvent();
+          }
+        }
 
         for (let j = 0; j < GameData._booster.length; j++) {
           if (mesh.intersectsMesh(GameData._booster[j].boosterMesh, true)) {

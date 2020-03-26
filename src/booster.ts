@@ -19,9 +19,13 @@ export class Booster extends Actor implements IBooster {
     constructor(pos: BABYLON.Vector3) {
         super(new BABYLON.Vector3(0, 0, 0));
 
+        var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
+        glowMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
+
         this.boosterMesh = BABYLON.MeshBuilder.CreateTorus("torus", { thickness: 0.1 }, Globals._scene);
         this.boosterMesh.position = pos;
         this.boosterMesh.scaling = new BABYLON.Vector3(15, 15, 15);
+        this.boosterMesh.material = glowMat;
         this.boosterMesh.rotate(new BABYLON.Vector3(1, 0, 0), BABYLON.Tools.ToRadians(90), BABYLON.Space.LOCAL);
     }
 

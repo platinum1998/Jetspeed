@@ -23,18 +23,16 @@ export class Pickup extends Actor implements IPickup {
         var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
         glowMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
-        let pick_up_geo = Globals._scene.getNodeByName("pickup_geo") as BABYLON.Mesh;
-        pick_up_geo.position.x = pos.x;
-        pick_up_geo.position.y = pos.y;
-        pick_up_geo.position.z = pos.z;
-        pick_up_geo.scaling.x = 20;
-        pick_up_geo.scaling.y = 20;
-        pick_up_geo.scaling.z = 20;
-        pick_up_geo.applyFog = true;
-        pick_up_geo.material = glowMat;
-        pick_up_geo.checkCollisions = true;
-
-        //this.pickupMesh = BABYLON.Mesh.CreateSphere("sphere3", 16, 1.5, Globals._scene);
+        this.pickupMesh = BABYLON.Mesh.CreateSphere("sphere3", 16, 1.5, Globals._scene);
+        this.pickupMesh.position.x = pos.x;
+        this.pickupMesh.position.y = pos.y;
+        this.pickupMesh.position.z = pos.z;
+        this.pickupMesh.scaling.x = 2;
+        this.pickupMesh.scaling.y = 2;
+        this.pickupMesh.scaling.z = 2;
+        this.pickupMesh.applyFog = true;
+        this.pickupMesh.material = glowMat;
+        this.pickupMesh.checkCollisions = true;    
     }
  
     update(dT: number): void {}  
