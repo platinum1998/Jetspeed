@@ -131,21 +131,15 @@ export class SceneParser {
      * @param rootNode The main root node for each anim child
      */
     private processSequenceNodes(rootNode: Node) {
-        //let num_sequences = rootNode.getChildren().length;
         let seq = Globals._scene.getNodeByName("sequences") as BABYLON.Mesh;
-        seq.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);
+        seq.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);  // Scale up all nodes
 
-        // TODO - rename typos for each sequence geo node
-        seq.material = Content.scene_material;
+        for (let i = 0; i < seq.getChildren().length; i++) {
+            let node_0 = Globals._scene.getNodeByName(`seq_${i}_geo_0`) as BABYLON.Mesh;
+            let node_1 = Globals._scene.getNodeByName(`seq_${i}_geo_1`) as BABYLON.Mesh;
 
-        // for (let i = 0; i < num_sequences; i++) {
-        //     rootNode.getChildren().forEach((node: Node) => {
-        //         if (node.name == `seq_${i.toString()}`) {
-        //             let seq_geo = node as BABYLON.Mesh;
-        //             seq_geo.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);
-        //             seq_geo.material = Content.scene_material;
-        //         }
-        //     });
-        // }
+            node_0.material = Content.scene_material;
+            node_1.material = Content.scene_material;
+        }
     }
 }
