@@ -13,7 +13,7 @@ import { Menu } from "./menu";
 import { SceneParser } from "./sceneParser";
 import { GameData } from "./data";
 import { Game } from "./game";
-import { Content } from "./ContentManager"
+import { Content } from "./content"
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting

@@ -4,7 +4,7 @@ import { Globals } from "./globals";
 import { GameData } from "./data";
 import { Module } from "./module";
 import { World } from "./world";
-import { Content } from "./ContentManager"
+import { Content } from "./content"
 
 export class SceneParser {
     /**

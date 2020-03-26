@@ -23,7 +23,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
   public camera: BABYLON.FreeCamera;
 
   // TODO: Move to a content manager class
-  private pickup_snd: BABYLON.Sound; 
+  private pickup_snd: BABYLON.Sound;
   private boost_snd: BABYLON.Sound;
   /////////////////////////////////////
 
@@ -45,7 +45,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
 
     this.camera = new BABYLON.FreeCamera(
       "player_camera",
-      new BABYLON.Vector3(0, 5, -530),
+      new BABYLON.Vector3(0, 10, -530),
       Globals._scene
     );
     this.camera.fov = -80;
@@ -53,7 +53,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     Globals._scene.activeCamera = this.camera;
 
     this.delay = 0;
-    this.speed = 3;
+    this.speed = 2.5;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
@@ -67,19 +67,19 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     var world_coords;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, 0, -500);
+      mesh.position = new BABYLON.Vector3(0, 0, -510);
       mesh.scaling = new BABYLON.Vector3(100, 100, 100);
       mesh.checkCollisions = true;
 
       Globals._scene.registerBeforeRender(function () {
-        mesh.position.z += 3;
+        mesh.position.z += 2.5;
 
         for (let i = 0; i < GameData.collisions.length; i++) {
           if (mesh.intersectsMesh(GameData.collisions[i], true)) {
             mesh.dispose();
           }
         }
-        
+
         for (let j = 0; j < GameData._pickups.length; j++) {
           if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
             GameData._pickups[j].pickupMesh.dispose();
@@ -166,7 +166,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
    */
   onPickup(): void {
     this.pickup_snd.play();
-    this.pickup_snd.onended = function() { this.pickup_snd.stop(); }
+    this.pickup_snd.onended = function () { this.pickup_snd.stop(); }
 
     UserData.IncreaseTokenCount(1);
   }

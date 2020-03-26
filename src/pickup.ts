@@ -4,7 +4,7 @@ import { Globals } from "./globals";
 import { ISubject } from "./observer";
 
 export interface IPickup extends ISubject {
-    registerObserver(x: IPickupDelegates): void; 
+    registerObserver(x: IPickupDelegates): void;
     notifyOnPickup(): void;
 }
 
@@ -15,9 +15,8 @@ export interface IPickupDelegates {
 export class Pickup extends Actor implements IPickup {
     private _delegates: IPickupDelegates[] = [];
     public pickupMesh: BABYLON.Mesh;
-    
-    constructor(pos) 
-    {
+
+    constructor(pos) {
         super(new BABYLON.Vector3(0, 0, 0));
 
         var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
@@ -32,18 +31,18 @@ export class Pickup extends Actor implements IPickup {
         this.pickupMesh.scaling.z = 2;
         this.pickupMesh.applyFog = true;
         this.pickupMesh.material = glowMat;
-        this.pickupMesh.checkCollisions = true;    
+        this.pickupMesh.checkCollisions = true;
     }
- 
-    update(dT: number): void {}  
-        
+
+    update(dT: number): void { }
+
     registerObserver(x: IPickupDelegates): void {
         this._delegates.push(x);
     }
 
     notifyOnPickup(): void {
-        for(let x of this._delegates) {
-            if(x.onPickup)
+        for (let x of this._delegates) {
+            if (x.onPickup)
                 x.onPickup();
         }
     }
