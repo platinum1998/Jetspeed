@@ -24,7 +24,7 @@ export class PickupFX extends Actor {
         this.particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0);
 
         this.particleSystem.minSize = 0.5;
-        this.particleSystem.maxSize = 3.0;
+        this.particleSystem.maxSize = 0.7;
 
         this.particleSystem.minLifeTime = 0.3;
         this.particleSystem.maxLifeTime = 1.5;
@@ -34,8 +34,8 @@ export class PickupFX extends Actor {
         this.particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
         this.particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
-        this.particleSystem.direction1 = new BABYLON.Vector3(7, 8, 3);
-        this.particleSystem.direction2 = new BABYLON.Vector3(-7, -8, -3);
+        this.particleSystem.direction1 = new BABYLON.Vector3(7, 8, 6);
+        this.particleSystem.direction2 = new BABYLON.Vector3(-7, -8, 6);
 
         this.particleSystem.minAngularSpeed = 0;
         this.particleSystem.maxAngularSpeed = Math.PI;
@@ -43,8 +43,9 @@ export class PickupFX extends Actor {
         this.particleSystem.minEmitPower = 1;
         this.particleSystem.maxEmitPower = 3;
         this.particleSystem.updateSpeed = 0.1;
+
+        this.particleSystem.start();
     }
-   
 
     update(dT: number): void {}
 } 

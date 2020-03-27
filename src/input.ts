@@ -28,7 +28,7 @@ export class Input {
           Input.tap = true;
           break;
         case BABYLON.PointerEventTypes.POINTERUP:
-          Input.tap = true;
+          Input.tap = false;
           break;
       }
     });
