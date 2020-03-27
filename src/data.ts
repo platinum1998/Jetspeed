@@ -3,6 +3,7 @@ import { Module } from "./module";
 import { GUI } from "./gui";
 import { Pickup } from "./pickup";
 import { Booster } from "./booster";
+import { Content } from "./content";
 
 /**
  * List of rewards
@@ -21,31 +22,57 @@ export interface Challenge {
     reward     // reward type (int)
 }
 
+export enum ChallengeTypes {
+    COLLECT_3_PICKUPS,
+    GO_THROUGH_A_HOOP
+}
+
 /**
  * Global user data / information
  */
+export var UserSettings = {
+    MAX_ONGOING_CHALLENGES: 3,
+    MAX_CHALLANGES: 10,
+    tokens: 0,
+    challenges: [],
+    current_Challenge: ChallengeTypes.COLLECT_3_PICKUPS,
+    jets: [],   // Indices
+    xp: 0,
+    best_score: 0,
+};
+
 export class UserData {
-    static MAX_ONGOING_CHALLENGES = 3;
-    static tokens = 0;
-    static challenges = [{}];
-    static jets = [];   // Indices
-    static xp = 0;
-    static best_score = 0;
+    // static userSettings: UserSettings; 
+
     static boosted: boolean;
 
+    static CheckForChallengeCompletion(challenge: number) {
+        if (UserSettings.current_Challenge == challenge) 
+        {
+            UserSettings.current_Challenge++;
+            console.log(UserSettings.challenges[UserSettings.current_Challenge]);
+        }
+    }
     static IncreaseTokenCount(add: number) {
         UserData.boosted = false;
-        if(UserData.boosted == false) {
-            UserData.tokens = UserData.tokens + add;
-            GUI.tokens_txt.text = "Tokens: " + UserData.tokens;
+        if (UserData.boosted == false) {
+            UserSettings.tokens = UserSettings.tokens + add;
+            GUI.tokens_txt.text = "Tokens: " + UserSettings.tokens;
             UserData.boosted = true;
-        } 
+        }
     }
     static ClearLocalStorage() {
         localStorage.clear();
     }
     static CheckForLocalStorage(uri) {
         // Load and assign data here if there is any...
+    }
+    static WriteUserDataToLocalStorage() {
+        console.log("Saved to Local Storage!");
+
+        window.localStorage.setItem("num_tokens", JSON.stringify(UserSettings.tokens));
+        window.localStorage.setItem("xp", UserSettings.xp.toString());
+        window.localStorage.setItem("current_challenge", UserSettings.current_Challenge.toString());
     }
 }
 

@@ -6,9 +6,9 @@ import { Actor } from "./Actor";
 import { Globals } from "./globals";
 import { Input } from "./input";
 import { GUI } from "./gui";
-import { GameData, UserData } from "./data";
-import { IPickupDelegates, IPickup } from "./pickup";
-import { IBoosterDelegates, IBooster } from "./booster";
+import { GameData, UserData, ChallengeTypes, UserSettings } from "./data";
+import { IPickupDelegates } from "./pickup";
+import { IBoosterDelegates } from "./booster";
 
 /**
  * The main player class for creating and updating the players movement
@@ -33,19 +33,22 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
   constructor() {
     super(new BABYLON.Vector3(0, 1, 0));
 
+    UserSettings.challenges.push("Collect 3 Pickups");
+    UserSettings.challenges.push("Go through a hoop");
+
     // TODO: Move to a content manager class
     this.pickup_snd = new BABYLON.Sound("pickup", "assets/sfx/pickup.wav", Globals._scene);
     this.pickup_snd.loop = false;
-    this.pickup_snd.setVolume(0.15);
+    this.pickup_snd.setVolume(0.1);
 
     this.boost_snd = new BABYLON.Sound("boost", "assets/sfx/boost.wav", Globals._scene);
     this.boost_snd.loop = false;
-    this.boost_snd.setVolume(0.15);
+    this.boost_snd.setVolume(0.1);
     ////////////////////////////////////////////////////////////////////////////////////////
 
     this.camera = new BABYLON.FreeCamera(
       "player_camera",
-      new BABYLON.Vector3(0, 10, -530),
+      new BABYLON.Vector3(0, 5, -530),
       Globals._scene
     );
     this.camera.fov = -80;
@@ -53,29 +56,30 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     Globals._scene.activeCamera = this.camera;
 
     this.delay = 0;
-    this.speed = 2.5;
+    this.speed = 3;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
-      "jet rxtz",
+      "jet 0",
       "",
-      "assets/geometry/",
-      "jet_rxtz.babylon"
+      "assets/scenes/",
+      "jet_0.babylon"
     );
 
     var mesh;
     var world_coords;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, 0, -510);
-      mesh.scaling = new BABYLON.Vector3(100, 100, 100);
+      mesh.position = new BABYLON.Vector3(0, 0, -500);
+      mesh.scaling = new BABYLON.Vector3(-150, 150, -150);
       mesh.checkCollisions = true;
 
       Globals._scene.registerBeforeRender(function () {
-        mesh.position.z += 2.5;
+        mesh.position.z += 3;
 
         for (let i = 0; i < GameData.collisions.length; i++) {
           if (mesh.intersectsMesh(GameData.collisions[i], true)) {
+            UserData.WriteUserDataToLocalStorage();
             mesh.dispose();
           }
         }
@@ -166,12 +170,14 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
    */
   onPickup(): void {
     this.pickup_snd.play();
-    this.pickup_snd.onended = function () { this.pickup_snd.stop(); }
-
     UserData.IncreaseTokenCount(1);
+
+    if(UserSettings.tokens >= 3) UserData.CheckForChallengeCompletion(ChallengeTypes.COLLECT_3_PICKUPS);
   }
   onBoost(): void {
     this.boost_snd.play();
+
+    UserData.CheckForChallengeCompletion(ChallengeTypes.GO_THROUGH_A_HOOP);
   }
   /***/
 }

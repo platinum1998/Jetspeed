@@ -1,10 +1,11 @@
 import * as BABYLON_UI from "babylonjs-gui";
 import { Globals } from "./globals"
-import { UserData } from "./data";
+import { UserData, UserSettings } from "./data";
 
 export class GUI {
   static tokens_txt: BABYLON_UI.TextBlock;
   static distance_travelled_txt: BABYLON_UI.TextBlock;
+  static challenges_txt: BABYLON_UI.TextBlock;
 
   // TODO: Move into GameData class
   static distance: number = 0;
@@ -23,13 +24,12 @@ export class GUI {
     Globals.uiTexture.addControl(this.distance_travelled_txt);
 
     this.tokens_txt = new BABYLON_UI.TextBlock();
-    this.tokens_txt.text = "Tokens: " + UserData.tokens;
+    this.tokens_txt.text = "Tokens: " + UserSettings.tokens;
     this.tokens_txt.color = "white";
     this.tokens_txt.fontSize = 54;
     this.tokens_txt.fontFamily = "SquareFont";
     this.tokens_txt.alpha = 0.5;
     this.tokens_txt.top = -900;
     Globals.uiTexture.addControl(this.tokens_txt);
-   
   }
 }

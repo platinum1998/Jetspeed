@@ -11,9 +11,8 @@ import { Pickup } from "./pickup";
 import { GUI } from "./gui";
 import { Menu } from "./menu";
 import { SceneParser } from "./sceneParser";
-import { GameData } from "./data";
-import { Game } from "./game";
 import { Content } from "./content"
+import { UserData } from "./data";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
@@ -57,9 +56,9 @@ export class World {
         autoplay: true
       }
     );
-    music.setVolume(0.02);
+    music.setVolume(0.1);
 
-    // Globals._scene.debugLayer.show(); // DEBUGGING PURPOSES  
+    //Globals._scene.debugLayer.show(); // DEBUGGING PURPOSES  
 
     BABYLON.SceneLoader.Append
       (
@@ -80,12 +79,11 @@ export class World {
       World._sceneParser.updateWorldCollision(root);
     });
 
+    this._player = new Player();
+
     if (Globals._scene.activeCamera == undefined) {
       Globals._scene.createDefaultCamera(false, true);
     }
-
-    // instaniate the player
-    this._player = new Player();
 
     Globals._scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
     Globals._scene.fogDensity = 0.3;

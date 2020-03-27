@@ -1,5 +1,5 @@
 import * as BABYLON from "babylonjs";
-import { Node, TransformNode } from "babylonjs";
+import { Node } from "babylonjs";
 import { Globals } from "./globals";
 import { GameData } from "./data";
 import { Module } from "./module";
@@ -36,7 +36,7 @@ export class SceneParser {
     constructor(rootNode: Node) {
         // TEMP
         this.module_name = "module_0";
-        let mesh = Globals._scene.getNodeByName("module_geo_0") as BABYLON.Mesh;
+        let mesh = Globals._scene.getNodeByName("module_0_geo") as BABYLON.Mesh;
         mesh.scaling.x = -500;
         mesh.scaling.y = 500;
         mesh.scaling.z = -500;
@@ -44,7 +44,7 @@ export class SceneParser {
 
         this.processTransformNodes(rootNode);
         this.processModuleNodes(rootNode);
-        this.processSequenceNodes(Globals._scene.getNodeByName("sequences"));
+        this.processSequenceNodes(Globals._scene.getNodeByName("module_0_sequences"));
     }
 
     /**
@@ -56,12 +56,12 @@ export class SceneParser {
         //     return n.name == "player_start_loc";
         // }, true)[0] as TransformNode).position;
 
-        let hoops_node = Globals._scene.getNodeByName("hoops");
+        let hoops_node = Globals._scene.getNodeByName("module_0_hoops");
         hoops_node.getChildren().forEach((node: Node) => {
             this._hoop_locations.push(node as BABYLON.TransformNode);
         });
 
-        let pickups_node = Globals._scene.getNodeByName("pickups");
+        let pickups_node = Globals._scene.getNodeByName("module_0_pickups");
         pickups_node.getChildren().forEach((node: Node) => {
             this._pickup_locations.push(node as BABYLON.TransformNode);
         });
@@ -78,7 +78,7 @@ export class SceneParser {
         mat.diffuseColor = new BABYLON.Color3(1, 1, 1);
         mat.alpha = 0.0;
 
-        let collision_geometry_group = Globals._scene.getNodeByName("wall_collision") as BABYLON.Mesh;
+        let collision_geometry_group = Globals._scene.getNodeByName("module_0_wall_collision") as BABYLON.Mesh;
         collision_geometry_group.scaling.x = -500;
         collision_geometry_group.scaling.y = 500;
         collision_geometry_group.scaling.z = -500;
@@ -111,10 +111,11 @@ export class SceneParser {
     private processModuleNodes(rootMapNode: Node) {
         const namePrefix = this.module_name;
 
-        rootMapNode.getChildren().forEach((node: Node) => {
+        rootMapNode.getChildren().forEach((node: Node) => 
+        {
             if (node.name == `${namePrefix}`) {
                 let geometry = (node.getChildren(n => {
-                    return n.name == "module_geo_0";
+                    return n.name == "module_0_geo";
                 }, true)[0] as BABYLON.Mesh);
 
                 GameData.modules.push(new Module(namePrefix, geometry));
@@ -131,12 +132,12 @@ export class SceneParser {
      * @param rootNode The main root node for each anim child
      */
     private processSequenceNodes(rootNode: Node) {
-        let seq = Globals._scene.getNodeByName("sequences") as BABYLON.Mesh;
+        let seq = Globals._scene.getNodeByName("module_0_sequences") as BABYLON.Mesh;
         seq.scaling = new BABYLON.Vector3(-GameData.world_scale, GameData.world_scale, -GameData.world_scale);  // Scale up all nodes
 
         for (let i = 0; i < seq.getChildren().length; i++) {
-            let node_0 = Globals._scene.getNodeByName(`seq_${i}_geo_0`) as BABYLON.Mesh;
-            let node_1 = Globals._scene.getNodeByName(`seq_${i}_geo_1`) as BABYLON.Mesh;
+            let node_0 = Globals._scene.getNodeByName(`module_0_seq_${i}_geo_0`) as BABYLON.Mesh;
+            let node_1 = Globals._scene.getNodeByName(`module_0_seq_${i}_geo_1`) as BABYLON.Mesh;
 
             node_0.material = Content.scene_material;
             node_1.material = Content.scene_material;
