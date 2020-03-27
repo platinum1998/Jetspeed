@@ -5,6 +5,7 @@ import { GameData } from "./data";
 import { Module } from "./module";
 import { World } from "./world";
 import { Content } from "./content"
+import { Game } from "./game";
 
 export class SceneParser {
     /**
@@ -83,7 +84,7 @@ export class SceneParser {
         collision_geometry_group.scaling.y = 500;
         collision_geometry_group.scaling.z = -500;
         collision_geometry_group.material = mat;
-
+        
         collision_geometry_group.getChildren().forEach((collider: Node) => {
             GameData.collisions.push(collider as BABYLON.Mesh);
             GameData.collisions[GameData.collisions.length - 1].material = mat;
@@ -97,11 +98,13 @@ export class SceneParser {
     private registerObserverPattern() {
         console.log("registering observers...");
 
-        for (let j = 0; j < GameData._pickups.length; j++)
-            World._player.setObserver(GameData._pickups[j]);
+        let p = World._states[1] as Game;
 
-        for (let j = 0; j < GameData._booster.length; j++)
-            World._player.setObserver(GameData._booster[j]);
+        for (let j = 0; j < GameData._pickups.length; j++) 
+            p._player.setObserver(GameData._pickups[j]);
+
+        for (let j = 0; j < GameData._booster.length; j++) 
+            p._player.setObserver(GameData._booster[j]);
     }
 
     /**

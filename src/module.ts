@@ -32,4 +32,10 @@ export class Module {
                 -pickup_locations[i].position.z * GameData.world_scale
             )));
     }
+    
+    public resetPickups() {
+        for (let i = 0; i < GameData._pickups.length; i++) {
+            GameData._pickups[i].pickupMesh.setEnabled(true);
+        }
+    }
 }

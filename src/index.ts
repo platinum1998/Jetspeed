@@ -11,8 +11,6 @@ class Game {
   public _delta: number;
   public _score: number;
 
-  private distance_travelled: BABYLON_GUI.TextBlock;
-
   /**
    * initialise the babylon engine and create a new empty scene
    * @param canvasElement the canvas that the content will be rendered to
@@ -24,13 +22,14 @@ class Game {
 
   /* ----------------------------- PRE-LOADED CONTENT ----------------------------- */
   initialise(): void {
+    // initialise the asset manager
     Globals._asset_manager = new BABYLON.AssetsManager(Globals._scene);
 
     // initialise the world and input
     Input.UpdateInput();
     World.Initialise();
 
-    loadAllContent(); // TODO: put this in the world class
+    loadAllContent(); 
 
     /* -------------------------------- UPDATE ------------------------------- */
     var update = () => {

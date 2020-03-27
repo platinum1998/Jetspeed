@@ -70,9 +70,10 @@ export class UserData {
     static WriteUserDataToLocalStorage() {
         console.log("Saved to Local Storage!");
 
+        window.localStorage.setItem("high_score", JSON.stringify(GUI.distance));
         window.localStorage.setItem("num_tokens", JSON.stringify(UserSettings.tokens));
-        window.localStorage.setItem("xp", UserSettings.xp.toString());
-        window.localStorage.setItem("current_challenge", UserSettings.current_Challenge.toString());
+        window.localStorage.setItem("xp", JSON.stringify(UserSettings.xp));
+        window.localStorage.setItem("current_challenge", JSON.stringify(UserSettings.current_Challenge));
     }
 }
 

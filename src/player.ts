@@ -9,6 +9,10 @@ import { GUI } from "./gui";
 import { GameData, UserData, ChallengeTypes, UserSettings } from "./data";
 import { IPickupDelegates } from "./pickup";
 import { IBoosterDelegates } from "./booster";
+import { Menu, MenuStates } from "./menu";
+import { World } from "./world";
+import { BoundingInfo, BabylonFileLoaderConfiguration } from "babylonjs";
+import { PickupFX } from "./pickupFX";
 
 /**
  * The main player class for creating and updating the players movement
@@ -39,11 +43,11 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     // TODO: Move to a content manager class
     this.pickup_snd = new BABYLON.Sound("pickup", "assets/sfx/pickup.wav", Globals._scene);
     this.pickup_snd.loop = false;
-    this.pickup_snd.setVolume(0.1);
+    this.pickup_snd.setVolume(0.2);
 
     this.boost_snd = new BABYLON.Sound("boost", "assets/sfx/boost.wav", Globals._scene);
     this.boost_snd.loop = false;
-    this.boost_snd.setVolume(0.1);
+    this.boost_snd.setVolume(0.25);
     ////////////////////////////////////////////////////////////////////////////////////////
 
     this.camera = new BABYLON.FreeCamera(
@@ -56,7 +60,7 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     Globals._scene.activeCamera = this.camera;
 
     this.delay = 0;
-    this.speed = 3;
+    this.speed = 3.2;
 
     // if the mesh loads succesfully, perform the code below
     this.meshTask = Globals._asset_manager.addMeshTask(
@@ -66,27 +70,54 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
       "jet_0.babylon"
     );
 
+    let player_mat = new BABYLON.StandardMaterial("Player_Material", Globals._scene);
+    player_mat.diffuseColor = new BABYLON.Color3(1, 0, 0);
+
     var mesh;
-    var world_coords;
     this.meshTask.onSuccess = task => {
       mesh = task.loadedMeshes[0];
-      mesh.position = new BABYLON.Vector3(0, 0, -500);
-      mesh.scaling = new BABYLON.Vector3(-150, 150, -150);
+      mesh.position = new BABYLON.Vector3(0, 0, -510);
+      mesh.scaling = new BABYLON.Vector3(-120, 120, -120);
+      mesh._boundingInfo = new BoundingInfo(
+        new BABYLON.Vector3(-0.0125, -0.005, -0.01),
+        new BABYLON.Vector3(0.0125, 0.005, 0.01
+        ));
+      mesh.material = player_mat;
       mesh.checkCollisions = true;
 
       Globals._scene.registerBeforeRender(function () {
-        mesh.position.z += 3;
+        mesh.position.z += 3.2;
+
+        var gameOver = () => {
+          let m = World._states[0] as Menu;
+          m.menu_state = MenuStates.ORIGIN;
+          m.fadeIn(0.0);
+        }
+
+        var resetGame = () => {
+          UserSettings.tokens = 0;
+          mesh.position = new BABYLON.Vector3(0, 0, -522);
+
+          Globals._scene.activeCamera.position.x = 0;
+          Globals._scene.activeCamera.position.y = 5;
+          Globals._scene.activeCamera.position.z = -530;
+          Globals._scene.activeCamera.fov = -80;
+
+          GameData.modules[0].resetPickups(); // only 1 module currently 
+        }
 
         for (let i = 0; i < GameData.collisions.length; i++) {
           if (mesh.intersectsMesh(GameData.collisions[i], true)) {
+            gameOver();
+            resetGame();
+
             UserData.WriteUserDataToLocalStorage();
-            mesh.dispose();
           }
         }
 
         for (let j = 0; j < GameData._pickups.length; j++) {
           if (mesh.intersectsMesh(GameData._pickups[j].pickupMesh, true)) {
-            GameData._pickups[j].pickupMesh.dispose();
+            GameData._pickups[j].pickupMesh.setEnabled(false);
             GameData._pickups[j].firePickupEvent();
           }
         }
@@ -172,7 +203,9 @@ export class Player extends Actor implements IPickupDelegates, IBoosterDelegates
     this.pickup_snd.play();
     UserData.IncreaseTokenCount(1);
 
-    if(UserSettings.tokens >= 3) UserData.CheckForChallengeCompletion(ChallengeTypes.COLLECT_3_PICKUPS);
+    let ps = new PickupFX(this.meshTask.loadedMeshes[0].position);
+
+    if (UserSettings.tokens >= 3) UserData.CheckForChallengeCompletion(ChallengeTypes.COLLECT_3_PICKUPS);
   }
   onBoost(): void {
     this.boost_snd.play();

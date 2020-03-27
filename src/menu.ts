@@ -1,9 +1,7 @@
 import {Globals } from "./globals"
 import { State } from "./state"
 import {Input} from "./input"
-import { UserData } from "./data"
-import { Scene } from "babylonjs";
-import { convolutionPixelShader } from "babylonjs/Shaders/convolution.fragment";
+import { GUI } from "./gui";
 
 /**
  * List of text elements to be assigned
@@ -40,7 +38,6 @@ export class Menu extends State {
     buttons: Array<BABYLON.GUI.Button> = new Array();
     transition_rate: number;
 
-
     constructor() {
         super();
 
@@ -57,7 +54,7 @@ export class Menu extends State {
         this.background.width = 1;
         this.background.height = 1;
         this.background.background = "white";
-        this.background.alpha = 0.9;
+        this.background.alpha = 1;
         Globals.uiTexture.addControl(this.background);
 
         // Button content
@@ -67,7 +64,7 @@ export class Menu extends State {
         this.buttons[3] = BABYLON.GUI.Button.CreateImageOnlyButton("leaderboard_btn", "assets/ui/leaderboard_btn.png");
         this.buttons[4] = BABYLON.GUI.Button.CreateImageOnlyButton("leaderboard_btn", "assets/ui/settings_btn.png");
         this.buttons[5] = BABYLON.GUI.Button.CreateImageOnlyButton("leaderboard_btn", "assets/ui/social_btn.png");
-        
+
         // Icons
         this.buttons[6] = BABYLON.GUI.Button.CreateImageOnlyButton("token_icon", "assets/ui/token_icon.png");
         this.buttons[7] = BABYLON.GUI.Button.CreateImageOnlyButton("token_icon", "assets/ui/dot_icon.png");
@@ -203,7 +200,7 @@ export class Menu extends State {
         this.textblocks[tb.BEST + 1].top = -580;
 
         // BEST VALUE
-        this.textblocks[tb.BEST + 2] = new BABYLON.GUI.TextBlock("best_value_tb", "512");
+        this.textblocks[tb.BEST + 2] = new BABYLON.GUI.TextBlock("best_value_tb", window.localStorage.high_score);
         this.textblocks[tb.BEST + 2].fontFamily = "SquareFont";
         this.textblocks[tb.BEST + 2].isEnabled = false;
         this.textblocks[tb.BEST + 2].color = "#616161";
@@ -230,13 +227,12 @@ export class Menu extends State {
         this.textblocks[tb.BEST + 4].fontSize = "200px";
         this.textblocks[tb.BEST + 4].top = 640;
                 
-
         // Add all buttons to UI texture
         for (let i = 0; i < this.buttons.length; i++)
-        Globals.uiTexture.addControl(this.buttons[i]);
+            Globals.uiTexture.addControl(this.buttons[i]);
         // Add all textblocks to UI texture
         for (let i = 0; i < this.textblocks.length; i++)
-        Globals.uiTexture.addControl(this.textblocks[i]);
+            Globals.uiTexture.addControl(this.textblocks[i]);
     }
 
     /**
@@ -250,7 +246,7 @@ export class Menu extends State {
                 this.updateBoosterBar(delta);
                 break;
             case MenuStates.GAME:
-                this.updateGameState(delta);
+                this.fadeOut(delta);
         }
     }
 
@@ -272,18 +268,7 @@ export class Menu extends State {
      */
     current_dir: number = -360;
     dir_switch: number = -this.current_dir;
-    animateBooster(dT) {
-        this.buttons[7].left = this.current_dir;
-        this.current_dir = BABYLON.Scalar.Lerp(this.current_dir, this.dir_switch, 0.025);
-
-        let greater = this.buttons[7].left > 358;
-        if (greater) {
-            this.dir_switch = -this.dir_switch;
-            console.log("SWITCH");
-        }
-        // else if (current_x <=  -358)
-        //     this.dir_switch = 360;
-    }
+    animateBooster(dT) {}
 
     /**
      * Update booster bar
@@ -302,7 +287,6 @@ export class Menu extends State {
 
         if (Input.tap === true) {
             if (Input.mouse_y > 1440) {
-                console.log("PLAY!");
                 this.menu_state = MenuStates.GAME;  // Assign game state
             }
         }
@@ -312,7 +296,7 @@ export class Menu extends State {
      * Update game state from menu
      * @param dT Delta time
      */
-    updateGameState(dT) {
+    fadeOut(dT) {
         // Tween background
         this.background.alpha = BABYLON.Scalar.Lerp(this.background.alpha, 0, this.transition_rate);
         
@@ -329,4 +313,27 @@ export class Menu extends State {
         this.rank_bar.alpha = BABYLON.Scalar.Lerp(this.rank_bar.alpha, 0, this.transition_rate);
         this.booster_bar.alpha = BABYLON.Scalar.Lerp(this.booster_bar.alpha, 0, this.transition_rate);
     }
+    
+    /**
+     * Update game state from menu
+     * @param dT Delta time
+     */
+    fadeIn(dT) {
+        // Tween background
+        this.background.alpha = BABYLON.Scalar.Lerp(this.background.alpha, 5, this.transition_rate);
+        
+        // Tween button alpha
+        for (let i = 0; i < this.buttons.length; i++) {
+            this.buttons[i].isEnabled = true;
+            this.buttons[i].alpha = BABYLON.Scalar.Lerp(this.buttons[i].alpha, 7, this.transition_rate);
+        }
+
+        // Tween textblock alpha
+        for (let i = 0; i < this.textblocks.length; i++)
+            this.textblocks[i].alpha = BABYLON.Scalar.Lerp(this.textblocks[i].alpha, 7, this.transition_rate);
+
+        this.rank_bar.alpha = BABYLON.Scalar.Lerp(this.rank_bar.alpha, 7, this.transition_rate);
+        this.booster_bar.alpha = BABYLON.Scalar.Lerp(this.booster_bar.alpha, 7, this.transition_rate);
+    }
+  
 }
