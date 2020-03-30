@@ -101,10 +101,10 @@ export class SceneParser {
         let p = World._states[1] as Game;
 
         for (let j = 0; j < GameData._pickups.length; j++) 
-            p._player.setObserver(GameData._pickups[j]);
+            p._player.setObserver(GameData._pickups[j].event_subject);
 
         for (let j = 0; j < GameData._booster.length; j++) 
-            p._player.setObserver(GameData._booster[j]);
+            p._player.setObserver(GameData._booster[j].event_subject);
     }
 
     /**

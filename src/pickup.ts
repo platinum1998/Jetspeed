@@ -1,24 +1,29 @@
 import * as BABYLON from "babylonjs";
 import { Actor } from "./Actor";
 import { Globals } from "./globals";
-import { ISubject } from "./observer";
+import { EventSubject } from "./eventDispatcher";
 
-export interface IPickup extends ISubject {
-    registerObserver(x: IPickupDelegates): void; 
-    notifyOnPickup(): void;
-}
+/**
+ * This class creates and updates a single pickup
+ */
+export class Pickup extends Actor {
+    // the pickup is an event subject. This means that it will fire events in-game when notified based on the observer class(player)
+    private _event_subject: EventSubject;
+    public get event_subject(): EventSubject {
+        return this._event_subject;
+    }
 
-export interface IPickupDelegates {
-    onPickup(): void;
-}
-
-export class Pickup extends Actor implements IPickup {
-    private _delegates: IPickupDelegates[] = [];
+    // the pickup mesh
     public pickupMesh: BABYLON.Mesh;
-    
-    constructor(pos) 
-    {
+
+    /**
+     * Constructer | initialise variables and create the pickup mesh
+     * @param pos the position of the pickup
+     */
+    constructor(pos) {
         super(new BABYLON.Vector3(0, 0, 0));
+
+        this._event_subject = new EventSubject();
 
         var glowMat = new BABYLON.StandardMaterial("glow_mat", Globals._scene);
         glowMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
@@ -28,24 +33,12 @@ export class Pickup extends Actor implements IPickup {
         this.pickupMesh.position = pos;
         this.pickupMesh.applyFog = true;
         this.pickupMesh.material = glowMat;
-        this.pickupMesh.checkCollisions = true;    
-    }
- 
-    update(dT: number): void {}  
-        
-    registerObserver(x: IPickupDelegates): void {
-        this._delegates.push(x);
+        this.pickupMesh.checkCollisions = true;
     }
 
-    notifyOnPickup(): void {
-        for(let x of this._delegates) {
-            if(x.onPickup)
-                x.onPickup();
-        }
-    }
-
-    firePickupEvent() {
-        console.log("Pickup event fired!");
-        this.notifyOnPickup();
-    }
+    /**
+    * Update the pickup 
+    * @param dT delta time
+    */
+    update(dT: number): void { }
 }

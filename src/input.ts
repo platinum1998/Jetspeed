@@ -1,14 +1,25 @@
 import { Globals } from "./globals";
 
+/**
+ * This class handles user input
+ */
 export class Input {
+  // keys
   public static a_key: boolean;
   public static d_key: boolean;
   public static tap: boolean;
 
+  // mouse 
   public static mouse_x: number;
   public static mouse_y: number;
 
+  /**
+   * Check for key input
+   */
   public static UpdateInput() {
+    /**
+     * add a keyboard observable to check for input
+    */
     Globals._scene.onKeyboardObservable.add(kbInfo => {
       switch (kbInfo.type) {
         case BABYLON.KeyboardEventTypes.KEYDOWN:
@@ -22,6 +33,9 @@ export class Input {
       }
     });
 
+    /**
+     * add a pointer observable to check for mouse  input
+     */
     Globals._scene.onPointerObservable.add(pointerInfo => {
       switch (pointerInfo.type) {
         case BABYLON.PointerEventTypes.POINTERDOWN:
@@ -33,6 +47,9 @@ export class Input {
       }
     });
 
+    /**
+     * Get the mouse x and y from an event listener
+     */
     window.addEventListener("mousemove", function() {
       Input.mouse_x = Globals._scene.pointerX;
       Input.mouse_y = Globals._scene.pointerY;

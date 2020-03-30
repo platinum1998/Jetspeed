@@ -50,7 +50,7 @@ class Game {
 
     // run the render loop
     Globals._engine.runRenderLoop(() => {
-      Globals._scene.clearColor = new BABYLON.Color4(0.25, 0.25, 0.26, 1);
+      Globals._scene.clearColor = new BABYLON.Color4(0.18, 0.18, 0.18, 1.0);
       Globals._scene.render();
     });
 

@@ -2,6 +2,7 @@ import {Globals } from "./globals"
 import { State } from "./state"
 import {Input} from "./input"
 import { GUI } from "./gui";
+import { UserSettings } from "./data";
 
 /**
  * List of text elements to be assigned
@@ -14,6 +15,9 @@ export enum TextElements {
     TAP             // 5
 }
 
+/**
+ * All the different menu states
+ */
 export enum MenuStates {
     ORIGIN,
     GAME,
@@ -30,6 +34,7 @@ export enum MenuStates {
  * The main menu class for Jetspeed
  */
 export class Menu extends State {
+    // Variables
     menu_state: number;
     background: BABYLON.GUI.StackPanel;
     rank_bar: BABYLON.GUI.Slider;
@@ -38,8 +43,13 @@ export class Menu extends State {
     buttons: Array<BABYLON.GUI.Button> = new Array();
     transition_rate: number;
 
+    /**
+     * Constructer | initialise variables and objects
+     */
     constructor() {
         super();
+
+        console.log("test");
 
         // Assign default values
         this.menu_state = MenuStates.ORIGIN;
@@ -54,7 +64,7 @@ export class Menu extends State {
         this.background.width = 1;
         this.background.height = 1;
         this.background.background = "white";
-        this.background.alpha = 1;
+        this.background.alpha = 0.8;
         Globals.uiTexture.addControl(this.background);
 
         // Button content
@@ -200,7 +210,7 @@ export class Menu extends State {
         this.textblocks[tb.BEST + 1].top = -580;
 
         // BEST VALUE
-        this.textblocks[tb.BEST + 2] = new BABYLON.GUI.TextBlock("best_value_tb", window.localStorage.high_score);
+        this.textblocks[tb.BEST + 2] = new BABYLON.GUI.TextBlock("best_value_tb", UserSettings.best_score.toString());
         this.textblocks[tb.BEST + 2].fontFamily = "SquareFont";
         this.textblocks[tb.BEST + 2].isEnabled = false;
         this.textblocks[tb.BEST + 2].color = "#616161";
@@ -209,7 +219,7 @@ export class Menu extends State {
         this.textblocks[tb.BEST + 2].top = -580;
 
         // TOKENS
-        this.textblocks[tb.BEST + 3] = new BABYLON.GUI.TextBlock("tokens_value", window.localStorage.num_tokens);
+        this.textblocks[tb.BEST + 3] = new BABYLON.GUI.TextBlock("tokens_value", "0");
         this.textblocks[tb.BEST + 3].fontFamily = "SquareFont";
         this.textblocks[tb.BEST + 3].isEnabled = false;
         this.textblocks[tb.BEST + 3].color = "#616161";
@@ -288,6 +298,7 @@ export class Menu extends State {
         if (Input.tap === true) {
             if (Input.mouse_y > 1440) {
                 this.menu_state = MenuStates.GAME;  // Assign game state
+                GUI.distance = 0;
             }
         }
     }

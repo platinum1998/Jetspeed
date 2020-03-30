@@ -4,6 +4,8 @@ import { GUI } from "./gui";
 import { Pickup } from "./pickup";
 import { Booster } from "./booster";
 import { Content } from "./content";
+import { World } from "./world";
+import { Menu } from "./menu";
 
 /**
  * List of rewards
@@ -38,14 +40,22 @@ export var UserSettings = {
     current_Challenge: ChallengeTypes.COLLECT_3_PICKUPS,
     jets: [],   // Indices
     xp: 0,
-    best_score: 0,
+    last_score: 0,
+    best_score: 0
 };
 
+/**
+ * This classes contains function related to the user
+ */
 export class UserData {
-    // static userSettings: UserSettings; 
-
+    // has the player just boosted through a hoop?
+    static local_storage_variables: Array<number> = Array<number>();
     static boosted: boolean;
 
+    /**
+     * Has the player completed the certain challenge yet?
+     * @param challenge the challenge to check for completetion
+     */
     static CheckForChallengeCompletion(challenge: number) {
         if (UserSettings.current_Challenge == challenge) 
         {
@@ -53,30 +63,38 @@ export class UserData {
             console.log(UserSettings.challenges[UserSettings.current_Challenge]);
         }
     }
+
+    /**
+     * Increase the users token count 
+     * @param add amount of increase
+     */
     static IncreaseTokenCount(add: number) {
         UserData.boosted = false;
         if (UserData.boosted == false) {
             UserSettings.tokens = UserSettings.tokens + add;
-            GUI.tokens_txt.text = "Tokens: " + UserSettings.tokens;
+            GUI.tokens_txt.text = "" + UserSettings.tokens;
             UserData.boosted = true;
         }
     }
+
+    /**
+     * Clear local storage
+     */
     static ClearLocalStorage() {
         localStorage.clear();
     }
-    static CheckForLocalStorage(uri) {
-        // Load and assign data here if there is any...
-    }
-    static WriteUserDataToLocalStorage() {
-        console.log("Saved to Local Storage!");
 
-        window.localStorage.setItem("high_score", JSON.stringify(GUI.distance));
-        window.localStorage.setItem("num_tokens", JSON.stringify(UserSettings.tokens));
-        window.localStorage.setItem("xp", JSON.stringify(UserSettings.xp));
-        window.localStorage.setItem("current_challenge", JSON.stringify(UserSettings.current_Challenge));
+    /**
+     * Write the user data to local storage
+     */
+    static WriteUserDataToLocalStorage() {
+        window.localStorage.setItem("data", JSON.stringify(UserSettings)); 
     }
 }
 
+/**
+ * This class stores main game data 
+ */
 export class GameData {
     static world_scale: number = 500;
     static number_of_modules: number = 3;

@@ -9,14 +9,16 @@ import { Menu } from "./menu";
 import { Content } from "./content"
 import { State } from "./state";
 import { Game } from "./game";
+import { SceneParser } from "./sceneParser";
 
 /**
  * This class handles creating the game world. Things like instantiating the player, NPC's and lighting
  */
 export class World {
-  public static meshAssetTask: BABYLON.MeshAssetTask;
+  // World variables 
   public static _states: Array<State> = Array<State>();
   public static _soundtrack: BABYLON.Sound;
+  public static _sceneParser: SceneParser;
 
   /**
    * Initialise the game world
@@ -35,8 +37,21 @@ export class World {
         autoplay: true
       }
     );
-    this._soundtrack.setVolume(0.15);
+    this._soundtrack.setVolume(0.0);
 
+    // load in the entire scene as a .gltf
+    BABYLON.SceneLoader.Append
+    (
+        "assets/scenes/",
+        "scene.gltf",
+        Globals._scene,
+        function (scene) {
+          Globals._scene = scene;
+          console.log("SCENE READY");
+        }
+    );
+
+    // Push the states to the state list
     this._states.push(new Menu());
     this._states.push(new Game());
 
@@ -49,6 +64,7 @@ export class World {
    * @param dT delta time
    */
   static update(dT) {
+    // update all the states
     for (let i = 0; i < this._states.length; i++)
       this._states[i].update(dT);
   }
